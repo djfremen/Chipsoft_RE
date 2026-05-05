@@ -1,0 +1,1 @@
+binupdate.exe j2534_pro.bin
