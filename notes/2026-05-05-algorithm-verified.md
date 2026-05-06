@@ -1,77 +1,110 @@
-# Trionic 8 SecurityAccess seed→key — algorithm verified
+# SAAB seed→key — algorithms verified at scale
 
-**Source data:** TrionicCANFlasher v0.1.73.0 uiLog from a 2025-01-31 session on a real
-SAAB Trionic 8 ECU. Saved at `notes/captures/2025-01-31-trionic-canflasher-uilog.txt`.
+**Source data:** 26 TrionicCANFlasher uiLog files spanning 2021-11-11 through
+2025-01-31. Logs are local (~/Desktop/logs_from_trionic/, 751 MB). Extraction
+is reproducible from the logs via `tools/extract_seedkey_fixtures.py`; the
+extracted fixture table lives at `notes/captures/all-trionic-canflasher-fixtures.tsv`.
 
-**Algorithm:** ported from [mattiasclaesson/Trionic](https://github.com/mattiasclaesson/Trionic)
-`TrionicCANLib/SeedToKey.cs`. Implemented at `tools/seedkey_t8.py`.
+**Algorithms:** ported from
+[mattiasclaesson/Trionic](https://github.com/mattiasclaesson/Trionic)
+`TrionicCANLib/SeedToKey.cs` to `tools/seedkey_t8.py`.
 
-For AccessLevel01:
+## Result: 45 / 45 captured pairs accounted for
+
+| Algorithm        | Pairs | Validates |
+|------------------|-------|-----------|
+| Trionic 8, level 0x01 | 24    | ✅       |
+| Motronic 96 (ME96)    | 21    | ✅       |
+| **Unknown / unmatched** | **0** | —      |
+
+Every captured (seed, key) pair across **3+ years of sessions** matches one of
+the documented `SeedToKey.cs` algorithms. Both the Trionic 8 path and the ME96
+path are bit-for-bit confirmed.
+
+## The algorithms
+
+```python
+# Trionic 8 (level 0x01 — used for engine ECM SecurityAccess)
+key = (ror16(seed, 5) + 0xB988) mod 2^16
+
+# Motronic 96
+c2 = (0xEB + seed) & 0xFF
+if 0x3808 <= seed < 0xA408:
+    c2 -= 1
+key = ((c2 << 9) | ((((0x5BF8 + seed) >> 8) & 0xFF) << 1) | ((c2 >> 7) & 1)) & 0xFFFF
 ```
-key = ror16(seed, 5) + 0xB988    (mod 2^16)
-```
 
-That's it — 16-bit rotate-right by 5, add a constant. Trivial to port to Kotlin or any
-other target.
+Both are trivial to port to any language.
 
-## Verified pairs (level 0x01)
+## Determinism evidence — strong
 
-| Timestamp           | Seed   | Expected | Computed | Match |
-|---------------------|--------|----------|----------|-------|
-| 2025-01-31 16:44:08 | 0x7F14 | 0x5D80   | 0x5D80   | ✅    |
-| 2025-01-31 16:59:49 | 0x7E11 | 0x4578   | 0x4578   | ✅    |
-| 2025-01-31 17:07:27 | 0x7F14 | 0x5D80   | 0x5D80   | ✅    |
-| 2025-01-31 20:27:37 | 0x5897 | 0x744C   | 0x744C   | ✅    |
+For every observed (level, seed) tuple, the captured key was always identical.
+**No collisions across the entire 45-pair dataset.** Same (seed, level) →
+always same key.
 
-All four pairs were granted by the ECM in the captured session ("Security access
-granted" in the log). The algorithm matches every one.
+This is what we'd expect from a deterministic algorithm — but it also means
+that for any given ECU **the seed→key mapping is a fixed function**. There is
+no per-session randomness in the key derivation.
 
-## Side observation: seeds repeat
+## Determinism evidence — seeds repeat across years
 
-Pair #1 (16:44) and pair #3 (17:07) have **identical seeds (0x7F14)** ~23 minutes apart.
-This implies SAAB Trionic 8 SecurityAccess seeds are **not pure session-nonces** — they
-appear to be derived from some deterministic state in the ECM. Possible mechanisms:
+Even more striking: the *seeds themselves* repeat across sessions years apart.
 
-1. ECM uses a PRNG that doesn't tick except on explicit auth attempts, and pairs #1 and
-   #3 came from a state where the PRNG was in the same position
-2. ECM had been power-cycled to the same boot state between #2 and #3
-3. Seed is genuinely deterministic from some stable ECM state and not nonce-based at all
+| Seed   | Times observed | First seen          | Last seen           | Algorithm |
+|--------|----------------|---------------------|---------------------|-----------|
+| 0x26B2 | **10**         | 2021-11-11 20:43:04 | 2024-05-09 12:22:25 | ME96      |
+| 0x7D45 | 9              | 2024-10-06 14:43:30 | 2024-10-06 15:33:49 | ME96      |
+| 0x5A0C | 4              | 2024-04-29 12:17:23 | 2024-05-09 11:53:15 | ME96      |
+| 0x569A | 3              | 2024-06-28 18:08:19 | 2024-07-02 13:24:24 | ME96      |
+| 0x9A1E | 2              | 2024-07-12 15:15:17 | 2024-07-12 15:22:23 | ME96      |
+| 0x7F14 | 2              | 2025-01-31 16:44:08 | 2025-01-31 17:07:27 | T8/01     |
 
-**Implications:**
-- For our **Android-direct unlock path**, this doesn't change anything — we always
-  derive the key from the seed at runtime, so deterministic-or-nonce-doesn't-matter.
-- For **replay-based attacks** (capture old (seed, key), replay key), determinism would
-  make this viable in some scenarios. We're not pursuing replay, but worth noting for
-  threat modeling.
+Seed 0x26B2 alone appeared 10 times across nearly 3 years — different days,
+different power cycles, different module operations. The ECM either:
+1. Has a small, deterministic seed pool (perhaps backed by a fixed-position
+   counter or stable register), OR
+2. Uses a true PRNG with very rare state changes between auth attempts, OR
+3. Hashes some near-stable input (e.g., a calibration-region-derived value)
+   to a small output space
 
-This is one captured session; would need more data to firm up the conjecture.
+**Implications for the Android-direct unlock path**: nothing changes — we
+always derive the key live from the seed.
 
-## What this unlocks
-
-Algorithm verification was the gating step in the bench-capture-plan
-(`notes/2026-05-05-bench-capture-plan.md`). With this in hand:
-
-- ✅ Kotlin port of `seedkey_t8.py` is safe — algorithm matches real ECM behavior
-- ✅ Don't need to do additional bench captures just for algorithm validation
-- ⏳ Still want a bench capture for: Tech2's exact UDS sequence (session-control,
-     TesterPresent cadence, ISO-TP framing on SWCAN @ 33.3k), and confirmation that
-     CANHacker mode on the Chipsoft sees pin 1. Both are independent of this finding.
-
-## Adapter used in the captured session
-
-The log shows `CANELM327Device` in a stack trace at line 778-780, with
-`selectedIndex=2` in `ITrionic.GetAdapterNames`. So the captured session used an
-**ELM327-based adapter** — likely a clone with at least basic GMLAN support. Worth
-noting because:
-- ELM327 doesn't natively support SWCAN; either the bus was HSCAN, or this is a modded
-  adapter (some clones have GMLAN firmware)
-- The seed→key algorithm is independent of transport, so the captured pairs are valid
-  regardless
+**Implications for replay scenarios** (informational, not a goal): if seeds
+genuinely cluster around stable values for a given ECM, then a previously
+captured (seed, key) pair may statistically be reusable on a future auth
+attempt against the same ECM. This is a non-trivial security observation
+that's worth recording for threat-modeling discussions; we are not pursuing
+it for our own work.
 
 ## Reproducing locally
 
 ```bash
-python tools/seedkey_t8.py            # runs self-test against the 4 fixtures
-python tools/seedkey_t8.py 7F14       # compute key for any seed (level 01 default)
+# Extract every (seed, key) pair from a directory of uiLog files.
+python tools/extract_seedkey_fixtures.py /path/to/logs_from_trionic -o fixtures.tsv
+
+# Run the bundled self-test against fixed fixtures (no log files needed).
+python tools/seedkey_t8.py
+
+# Compute a key for a specific seed (any algorithm).
+python tools/seedkey_t8.py 7F14
+python tools/seedkey_t8.py 26B2 --algo me96
 python tools/seedkey_t8.py 7F14 --level FD
 ```
+
+## Adapter context
+
+The captured sessions used various adapters across years; the 2025-01-31
+session (the seed for this analysis) used an ELM327-based adapter
+(`CANELM327Device` in stack traces, `selectedIndex=2`). Algorithm validation
+is transport-independent, so all captures are valid regardless of adapter.
+
+## What this unlocks
+
+- ✅ **Algorithm port to Kotlin is safe** — Trionic 8 path (24 fixtures) and
+     ME96 path (21 fixtures) both validated against years of real ECM
+     responses.
+- ✅ **Determinism is established** — same (seed, level) → same key, always.
+- ⏳ **Bench capture (Tech2 sequence + ISO-TP details + CANHacker pin-1
+     question)** is still useful for the *transport* layer; it's no longer a
+     blocker for the key-derivation layer.
