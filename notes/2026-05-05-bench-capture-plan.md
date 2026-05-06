@@ -1,113 +1,122 @@
 # Bench-capture plan — Tech2Win SecurityAccess on a SAAB Trionic 8 ECM
 
-Reference algorithm: [mattiasclaesson/Trionic](https://github.com/mattiasclaesson/Trionic)
-on GitHub provides the public Trionic 8 SecurityAccess seed→key implementation
-(`TrionicCANLib/SeedToKey.cs`). The bench capture below verifies that public algorithm
-matches Tech2's actual key for a known seed.
+> **Scope tightened 2026-05-05.** Algorithm correctness was validated against
+> 45/45 captured (seed, key) pairs from TrionicCANFlasher uiLogs (see
+> `2026-05-05-algorithm-verified.md`), and the full j2534_interface.dll wire
+> opcode catalog was recovered from static analysis (see
+> `2026-05-05-opcode-summary.md`). The bench session is now scoped purely to
+> **protocol-sequence verification on a SAAB**, not algorithm verification.
+>
+> Setup A (two Chipsofts + CANHacker sniffer) is **dropped** — its only unique
+> deliverable was answering "does CANHacker mode expose SWCAN on pin 1?",
+> which is no longer on the critical path. Setup B is the only setup below.
 
-Goal: produce a (seed, key) pair from a known-good Tech2Win unlock, plus ground-truth
-trace of the UDS sequence and (if hardware allows) the literal CAN frames on the wire.
-Outputs feed two open items:
+## What this bench session answers
 
-1. Verify `mattiasclaesson/Trionic — TrionicCANLib/SeedToKey.cs::calculateKey(seed, AccessLevel01)`
-   produces the same key Tech2 produced. → confirms algorithm port to Kotlin is safe.
-2. Confirm whether Chipsoft Pro in **CANHacker mode** sees SWCAN @ 33.3k on pin 1
-   (the open question from the static RE).
+- Tech2's exact UDS sequence on a Trionic 8 (`0x10 0x03` ExtendedSession first?
+  `0x3E 00` TesterPresent cadence?)
+- Which J2534 ProtocolID Tech2 picks for the engine ECM (`SW_CAN_PS` vs `CAN_PS`)
+- The exact `J1962_PINS` IOCTL value Tech2 sets — confirms the pin-alignment
+  question
+- The pre-auth steps observed in earlier logs (PI `0xB9` read — what is it?)
+- Sanity confirmation that `seedkey_t8.py` matches a fresh bench-captured pair
 
 ## Hardware needed
 
 - SAAB Trionic 8 ECM on the bench
-- 12V bench supply (or battery) for the ECM
-- "OBD SX" bench harness (passive — exposes ECM connector to a standard OBD-II port)
-- OBD-II Y-splitter (3-way: ECM → tester branch + sniffer branch)
-- Chipsoft J2534 Pro adapter — at least one. Two is cleaner (see below).
-- Windows 10 laptop(s) with Tech2Win installed
+- 12V bench supply (or battery)
+- "OBD SX" bench harness (passive — exposes ECM connector to standard OBD-II)
+- One Chipsoft J2534 Pro adapter
+- Windows 10 laptop with Tech2Win installed
 
-## Two viable setups
-
-### Setup A — TWO Chipsofts (cleanest, what Chris proposed)
+## Setup
 
 ```
-ECM (bench, 12V) ──── OBD SX ──── OBD-II Y-splitter ──┬── [Chipsoft #1, J2534 mode, Win10 laptop #1]
-                                                       │       └── Tech2Win drives the unlock
-                                                       │
-                                                       └── [Chipsoft #2, CANHacker mode, Win10 laptop #2]
-                                                               └── lawicel sniffer, listen-only
+ECM (bench, 12V) ──── OBD SX ──── OBD-II ──── [Chipsoft, J2534 mode] ──── [Win10 laptop, Tech2Win]
+                                                                              └── j2534_interface.dll's
+                                                                                  built-in Boost.Log sink
+                                                                                  (LogLevel:1) writes a
+                                                                                  timestamped .log to disk
 ```
 
-Captures:
-- Laptop #1: J2534 trace via `LogLevel:1` in `C:\ProgramData\CHIPSOFT_J2534\options.json`
-- Laptop #2: raw CAN frames with arbitration IDs, ISO-TP framing, exact bus timing
+## Prerequisites
 
-This setup also answers "does CANHacker mode expose SWCAN on pin 1?" as a side effect.
-
-### Setup B — ONE Chipsoft (works today with just gear on hand)
-
-```
-ECM (bench, 12V) ──── OBD SX ──── OBD-II ──── [Chipsoft, J2534 mode, Win10 laptop]
-                                                  └── Tech2Win drives the unlock
-                                                  └── J2534 driver logs trace to disk
-```
-
-No sniffer branch. We get:
-- ✅ UDS bytes (PassThru* call payloads) → enough to verify SeedToKey.cs
-- ❌ Literal CAN frames / arbitration IDs / ISO-TP segmentation behavior
-- ❌ Answer to "does CANHacker mode see SWCAN on pin 1?" (defer until later)
-
-This is enough to unblock algorithm verification + Android client work. The literal-CAN
-capture is a bonus we can do later when Chris's friend's Kvaser is available, or with a
-second Chipsoft.
-
-## Prerequisites — Chipsoft setup (both setups)
-
-1. Install Chipsoft drivers on the Win10 laptop(s). Verify in Device Manager:
-   - J2534 mode → "STMicroelectronics Virtual COM Port (COMx)"
-   - CANHacker mode → "CAN Hacker (COMx)"
-2. Set Tech2Win config: run `CST2WinConfig.exe` → select **"Drop CAN on pins 3-11"**.
-   This makes SWCAN-on-pin-1 active (SAAB Trionic 8 mode).
-   Stored in registry: `HKLM\SOFTWARE\CHIPSOFT\Tech2Win\Tech2Win_DropCAN3_11 = 1`.
+1. Install Chipsoft drivers on the Win10 laptop. Confirm Device Manager shows
+   `STMicroelectronics Virtual COM Port (COMx)` for the adapter in J2534 mode.
+2. Run `CST2WinConfig.exe` → select **"Drop CAN on pins 3-11"** (registry
+   `HKLM\SOFTWARE\CHIPSOFT\Tech2Win\Tech2Win_DropCAN3_11 = 1` — required for
+   SAAB Trionic 8 SWCAN-on-pin-1 mode).
 3. Edit `C:\ProgramData\CHIPSOFT_J2534\options.json`:
    ```json
    {
-     "LogLevel": 1,
+     "LogLevel": 0,
      "Pro": { "OpenPort2Mode": true, "RemapAUXToPIN": 12 }
    }
    ```
-   (`LogLevel: 1` enables J2534 driver logging. Default `10` = off.)
+   This enables the driver's built-in Boost.Log sink at **trace level**
+   (the most verbose; guarantees the `(W) >> ` / `(R) << ` wire markers
+   land in the file). Confirmed by static RE in
+   `2026-05-05-config-answers.md`: the LogLevel byte is gated `< 5`
+   (Boost.Log severity scale, 0=trace…4=error, ≥5 disables sink).
+   - **Log file location: `C:\ProgramData\CHIPSOFT_J2534\logs\<YYYYMMDD>_<HHMMSS>.log`**
+     Path is built from `getenv("ALLUSERSPROFILE") + "\CHIPSOFT_J2534\logs\" +
+     <strftime timestamp> + ".log"`. Each line: `[%TimeStamp%]: %Message%`.
+   - Confirm by tailing the log file at adapter open — you should see
+     Boost.Log markers immediately.
+   - Full key reference (all of options.json, recovered from RE):
+     top-level `LogLevel`; tier sub-objects `Lite` / `Mid` / `Pro`,
+     each with `OpenPort2Mode`, `RemapAUXToPIN`, `SplitReadTimeout`.
+     Only `Pro` matters for the J2534 driver path.
 4. Confirm Tech2Win sees the device in its adapter chooser dialog.
 
-## Prerequisites — CANHacker laptop (Setup A only)
+## What the LogLevel:1 capture contains
 
-1. Flash device #2 to CANHacker mode via Start → Programs → CHIPSOFT J2534 Pro → "Make CANHacker"
-2. Install `canhacker_driver.inf` (Win10 will require disabling driver-signature enforcement)
-3. Open the CAN Hacker COM port via PuTTY/Tera Term/python:
-   - Bit rate: divisor `30` (1000000 / 30 = 33333.3) — try `s30\r` or the User Def `Baudrate Reg.` setting in the CANHacker GUI
-   - Open in **listen-only**: `L\r` (NOT `O\r` — listen-only never transmits, including ACKs)
-   - Receive frames as: `t<id-3hex><len><data>\r` for 11-bit, `T<id-8hex><len><data>\r` for 29-bit
+Recovered from static analysis of `j2534_interface.dll`:
 
-⚠️ **Critical**: listen-only mode. If the second adapter is in active mode, it ACKs every frame
-on the bus and Tech2's transactions may behave differently than they would on a real car bus
-(the ECM is the only other node on a bench rig).
+- **`(W) >> <hex bytes>`** — every framed wire envelope written to USB-CDC.
+  This is the 8-byte header + payload + checksum exactly as the Android-direct
+  client will emit. Generated by `FUN_1001c810` (the framer that wraps
+  `FUN_1001d270` / send_and_wait).
+- **`(R) << <hex bytes>`** — every framed reply from the device.
+- **`execRequest result = <code>`** — return code for each send-and-wait.
+- **`Add async message to queue`**, **`Add TX_MSG_TYPE message`**,
+  **`Messages in queue: <n>`**, **`Error in message: <…>`** — queue/state
+  transitions inside the IOCP write/read paths.
+- Standard Boost.Log severity prefixes (`[trace] [debug] [info] [warning]
+  [error]`).
+
+The wire-byte log is the same data a passive USB-CDC tap would produce, but
+captured from inside the DLL with no extra hardware. With the opcode catalog
+in `2026-05-05-opcode-summary.md`, every wire frame is decodable to a J2534
+operation.
 
 ## Procedure
 
 1. Power on bench ECM (12V, GND, ignition pin if needed for the SAAB harness).
-2. Verify Tech2Win connects and reads basic info from the ECM (no SecurityAccess yet — confirms bus is alive).
-3. (Setup A) Start the CANHacker capture on laptop #2 — log every received line to a file with timestamp.
-4. In Tech2Win, navigate to a service that requires SecurityAccess. Good candidates:
-   - "Module → Engine → Programming" path
-   - "Configuration / Programming" → any flash-related submenu
-   - "Reset Adaptations" if it triggers auth
-5. Tech2Win will prompt or proceed; the ECM will respond with `0x67 0x01 SS SS` (seed); Tech2 computes the key and sends `0x27 0x02 KK KK`; ECM responds `0x67 0x02` (granted) or `0x7F 0x27 ER` (denied).
-6. Stop captures.
+2. Confirm Tech2Win connects and reads basic info from the ECM (VIN, software
+   version, no SecurityAccess yet — proves bus is alive and pins are aligned).
+3. Note the timestamp; rotate or empty the `logs\` directory so the next file
+   starts clean.
+4. In Tech2Win, navigate to a service that requires SecurityAccess. Reliable
+   trigger paths:
+   - `Module → Engine → Programming`
+   - `Configuration / Programming` → any flash-related submenu
+   - `Reset Adaptations` if it provokes auth
+5. Let Tech2 complete the unlock. ECM responds `0x67 01 SS SS` (seed); Tech2
+   computes and sends `0x27 02 KK KK`; ECM returns `0x67 02` (granted) or
+   `0x7F 27 ER` (denied).
+6. Quit Tech2Win cleanly so the Boost.Log sink flushes.
 
-## What to extract from the captures
+## Saving the capture
 
-### From J2534 log (both setups)
+```
+Chipsoft_RE/notes/captures/2026-MM-DD-tech2win-bench-securityaccess.j2534.log
+```
 
-Look for sequential `PassThruWriteMsgs` / `PassThruReadMsgs` calls. The bytes inside are
-the UDS payload. Pattern:
+Pattern observed at both layers (J2534 API and wire) — both should appear in
+the log:
 
+**J2534 API layer (PassThru* with payload bytes):**
 ```
 PassThruWriteMsgs: [00 00 07 E0 02 27 01]                     ← request seed (level 0x01)
 PassThruReadMsgs:  [00 00 07 E8 04 67 01 SS SS]               ← seed = SS SS
@@ -115,65 +124,60 @@ PassThruWriteMsgs: [00 00 07 E0 04 27 02 KK KK]               ← send key
 PassThruReadMsgs:  [00 00 07 E8 02 67 02]                     ← granted
 ```
 
-Save as: `notes/captures/2026-MM-DD-tech2win-securityaccess.j2534-trace.log`
-
-### From CANHacker log (Setup A only)
-
-Same sequence at the CAN frame layer. Trionic 8 uses 11-bit IDs `0x7E0` (request) / `0x7E8`
-(response) per `mattiasclaesson/Trionic — TrionicCANLib/Trionic8.cs:322-324`. ISO-TP single frames for
-both directions (payloads ≤ 7 bytes fit in one frame).
-
+**Wire-envelope layer (built-in `(W) >>` / `(R) <<` markers):**
 ```
-t7E0 8 02 27 01 00 00 00 00 00      ← request seed
-t7E8 8 04 67 01 SS SS 00 00 00      ← seed
-t7E0 8 04 27 02 KK KK 00 00 00      ← send key
-t7E8 8 02 67 02 00 00 00 00 00      ← granted
+(W) >> 22 02 .. .. 14 00 00 .. [framed write]
+(R) << 22 .. .. .. .. .. .. .. [framed reply]
 ```
 
-Save as: `notes/captures/2026-MM-DD-tech2win-securityaccess.canhacker.slcan.log`
+The opcode (here `0x22` = async PassThruWriteMsgs) is the second byte and maps
+directly to `notes/2026-05-05-opcode-summary.md`.
 
-## Verification step
+## Extraction (post-bench, on Mac)
 
-Once captures are in hand, run:
-
-```
-mattiasclaesson/Trionic — TrionicCANLib/SeedToKey.cs::calculateKey(seedBytes, AccessLevel.AccessLevel01)
-  → expected: produces KK KK matching the captured key
-```
-
-If equal: algorithm port to Kotlin is safe ✅
-If not equal: we have a (seed, key) fixture to debug against
-
-## Open questions this answers
-
-- ✅ Algorithm correctness (port-ready)
-- ✅ Tech2's exact UDS sequence (does it send `0x10 0x03` first? TesterPresent cycling?)
-- ✅ (Setup A only) CAN-layer details: arbitration IDs, ISO-TP segmentation, timing
-- ✅ (Setup A only) Whether CANHacker mode exposes SWCAN on pin 1
+1. **Verify the algorithm holds for a fresh pair.** Run the captured seed
+   through `tools/seedkey_t8.py` → expect captured key out.
+2. **Extract the J2534 init sequence** — every `PassThruConnect` / `PassThruIoctl`
+   call before the first `PassThruWriteMsgs(0x27 …)`:
+   - ProtocolID? (`SW_CAN_PS` vs `CAN_PS`)
+   - Baud rate?
+   - SET_CONFIG params — especially `J1962_PINS`
+3. **Map the UDS sequence** — every `0x10`, `0x27`, `0x3E`, `0xB9` request and
+   their replies, in order with timestamps. Document any pre-auth reads.
+4. **(Optional) Cross-check at the wire layer.** For each `PassThru*` call,
+   find the matching `(W) >> <opcode>` line. Confirms the opcode catalog and
+   verifies length/checksum bytes against the captured response.
 
 ## Risks / things that might trip us up
 
-1. **Tech2Win not provoking SecurityAccess**: simply connecting to an ECM doesn't usually
-   trigger `0x27`. Tech2 only requests it when starting an operation that needs it (programming,
-   adaptations reset, etc.). If captures are silent on `0x27`, try a different Tech2 menu path.
-2. **Bench ECM might not be in the right state to accept SecurityAccess**: some Trionic 8 ECMs
-   require the ignition signal asserted, or specific sequencing. The SAAB community wiki has
-   bench wiring; consult before powering up.
-3. **ACK collisions**: if Setup A and the second adapter is in active mode, Tech2 will see
-   double-ACKs and behavior may differ from a real car. Always **listen-only** on the sniffer.
-4. **Driver-signature on Win10**: CANHacker driver is unsigned. Need test mode or signature
-   enforcement disabled.
-5. **Splitter capacitance on SWCAN**: SWCAN is sensitive to bus capacitance. A long Y-splitter
-   cable might degrade signal quality at 33.3k. Use short splitter, ideally < 30 cm to each branch.
+1. **Tech2 not provoking SecurityAccess.** Simply connecting doesn't trigger
+   `0x27`. If captures are silent on `0x27`, try a different Tech2 menu path
+   (programming / adaptation reset).
+2. **Bench ECM in wrong state.** Some Trionic 8 ECMs need ignition asserted or
+   specific sequencing. SAAB community wiki has bench wiring; consult first.
+3. ~~LogLevel value mapping~~ — **resolved by static RE 2026-05-05.**
+   Threshold is `< 5`, scale is Boost.Log standard (0=trace…4=error,
+   ≥5=off). Use `0` for max verbosity. See `2026-05-05-config-answers.md`.
+4. ~~Log file location~~ — **resolved by static RE 2026-05-05.**
+   `%ALLUSERSPROFILE%\CHIPSOFT_J2534\logs\<timestamp>.log` =
+   `C:\ProgramData\CHIPSOFT_J2534\logs\…` on default Win10.
 
 ## Pickup state for next session
 
-- Files to create: `Chipsoft_RE/notes/captures/` directory
-- Tools to write later: small Python script to parse Chipsoft J2534 log → extract UDS exchanges
-- Code to write later: Kotlin port of `SeedToKey.cs` for Trionic 8
+- Create `Chipsoft_RE/notes/captures/` directory before bench
+- Confirm `options.json` is editable (some installs may have it read-only)
+- Light-weight Python parser (post-bench) to walk the Boost.Log file and emit
+  a chronological table of `(W) >> ` / `(R) << ` opcodes with decoded names
+  from `2026-05-05-opcode-summary.md`
 
-## Decision needed from Chris before next session
+## What's no longer needed (dropped from earlier draft)
 
-- **One Chipsoft or two?** Determines Setup A vs Setup B.
-- **When?** Bench session needs ECM-on-bench setup time + Win10 laptop time. Maybe schedule
-  the CANHacker-mode flash as a separate prep step from the Tech2Win run.
+- **Setup A (two Chipsofts + CANHacker sniffer).** Its outputs (literal CAN
+  frames, ISO-TP framing, "does CANHacker mode see SWCAN on pin 1?") aren't
+  required for the Android-direct client and aren't on the critical path.
+  Revisit only if a future Kvaser-based CAN sniff session is needed.
+- **The DLL shim project (`wiki/projects/tech2win-j2534-shim.md`).**
+  Mothballed — `LogLevel:1` produces the same wire bytes from inside the
+  driver, with zero implementation cost.
+- **Algorithm verification as a goal.** Already validated 45/45 from existing
+  TrionicCANFlasher logs.
