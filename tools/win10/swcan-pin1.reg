@@ -1,0 +1,9 @@
+Windows Registry Editor Version 5.00
+
+; Chipsoft Pro: drop HSCAN on pins 3-11, keep SWCAN on pin 1.
+; Use this for SAAB Trionic 8 (engine ECM SecurityAccess via SWCAN @ 33.3k).
+; Restart Tech2Win / J2534 client after import.
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\CHIPSOFT\Tech2Win]
+"Tech2Win_DropCAN3_11"=dword:00000001
+"Tech2Win_DropSWCAN1"=dword:00000000

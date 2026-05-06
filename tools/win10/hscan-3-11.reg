@@ -1,0 +1,9 @@
+Windows Registry Editor Version 5.00
+
+; Chipsoft Pro: drop SWCAN on pin 1, keep HSCAN on pins 3-11.
+; Use this when talking to body/cabin modules on the high-speed CAN bus.
+; Restart Tech2Win / J2534 client after import.
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\CHIPSOFT\Tech2Win]
+"Tech2Win_DropCAN3_11"=dword:00000000
+"Tech2Win_DropSWCAN1"=dword:00000001

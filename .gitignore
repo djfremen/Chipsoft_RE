@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+
+# Ghidra: project DB is large and binary; reproducible via tools/ghidra_headless.sh
+ghidra_project/
+*.gpr
+*.lock
+*.lock~
