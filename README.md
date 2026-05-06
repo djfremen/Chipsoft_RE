@@ -12,13 +12,48 @@ Chipsoft_RE/
 │   ├── *.bin                    # Firmware: canhacker_pro / kline_pro / j2534_pro
 │   ├── chipsoft_j2534_pro_*.pdf # Official manuals (EN/RU)
 │   └── drivers/*.inf            # canhacker / kline driver INFs
+├── android/                     # ← Android Tech2 emulator app (Compose, USB-CDC)
+│   ├── app/                     #     Source + tests (UDS over CAN, seed-to-key)
+│   ├── build.gradle.kts
+│   └── settings.gradle.kts      #     rootProject.name = "ChipsoftTech2"
 ├── tools/
 │   ├── pe_summary.py            # PE arch / sections / imports / exports
-│   └── disasm_export.py         # Capstone disasm of named export or RVA
+│   ├── disasm_export.py         # Capstone disasm of named export or RVA
+│   └── ghidra_scripts/          # DumpOpcodes / DumpConfig / DumpDrain / ...
 ├── notes/
-│   └── 2026-05-05-first-pass.md # First static analysis findings
+│   └── 2026-05-05-*.md          # Static-RE findings + opcode catalog + bench plan
 └── .venv/                       # Python venv: capstone, pefile (gitignored)
 ```
+
+## Android Tech2 emulator
+
+`android/` is an Android Studio project that drives the Chipsoft J2534 Pro
+adapter directly from a phone — no Windows, no PC-side Tech2Win. The first
+runnable screen exercises UDS service `0x1A` (ReadEcuIdentification) against
+an in-memory loopback transport so the parsing pipeline is provably working
+before hardware is plugged in.
+
+```bash
+cd Chipsoft_RE/android
+./gradlew :app:testDebugUnitTest    # 18 unit tests across UDS + seed-to-key
+./gradlew :app:assembleDebug        # APK in app/build/outputs/apk/debug/
+```
+
+What lives there:
+- `app/src/main/.../uds/` — `CanFrame`, `CanTransport` (open + send + receive),
+  `Uds27Client` (SecurityAccess), `UdsReadEcuInfoClient` (ReadEcuId, single
+  & first-frame ISO-TP).
+- `app/src/main/.../crypto/SaabSeedToKey.kt` — Trionic 8 + ME96 seed→key
+  algorithms ported from the open-source `mattiasclaesson/Trionic` library
+  and validated against 45 captured ECM (seed, key) pairs from 2021-2025.
+- `app/src/test/...` — JUnit 4 tests + `FakeEcuTransport` (in-memory ECM
+  simulator with HappyPath / AlreadyGranted / BadKey / LockedOut / Silent
+  behaviours).
+
+The real `J2534Transport` (Chipsoft USB-CDC, 8-byte wire envelope per
+`notes/2026-05-05-ghidra-drain.md`, 24 opcodes per
+`notes/2026-05-05-opcode-summary.md`) is the next module to land and slots
+in behind the existing `CanTransport` interface.
 
 ## Workflow
 

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Chipsoft Tech2 emulator launcher mark: stylized "T2" wordmark
+         centred inside the safe zone. -->
+    <path
+        android:pathData="M30,40 L78,40 L78,46 L60,46 L60,76 L48,76 L48,46 L30,46 Z"
+        android:fillColor="#7AA2F7" />
+    <path
+        android:pathData="M30,82 L48,82 C 56,82 60,78 60,72 C 60,66 56,62 48,62 L36,62 L36,67 L48,67 C 51,67 53,69 53,72 C 53,75 51,77 48,77 L30,77 Z"
+        android:fillColor="#6EE7A8"
+        android:fillAlpha="0.6" />
+</vector>

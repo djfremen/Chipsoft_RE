@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+      Chipsoft J2534 Pro adapter — STM32 USB-CDC virtual COM port.
+      Vendor ID 1155 (0x0483) = STMicroelectronics.
+      Product ID 22336 (0x5740) is the stock STM32 Virtual COM Port firmware
+      Chipsoft devices ship with; confirm on the bench and add the actual
+      observed VID/PID if it differs.
+    -->
+    <usb-device vendor-id="1155" product-id="22336" />
+    <usb-device vendor-id="1155" />
+
+    <!--
+      Useful generic USB-serial bridges for prototyping with non-Chipsoft
+      hardware (cheap CH340 cables, FTDI adapters). Keep these so the same
+      app can drive an OBDLink SX or ELM327 clone over the same transport
+      abstraction during early bench tests.
+    -->
+    <usb-device vendor-id="1027" />   <!-- 0x0403 FTDI -->
+    <usb-device vendor-id="6790" />   <!-- 0x1A86 WCH (CH340/CH341) -->
+</resources>
