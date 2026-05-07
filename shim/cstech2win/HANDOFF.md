@@ -1,5 +1,11 @@
 # Shim project handoff — for the next agent picking this up
 
+**STATUS UPDATE 2026-05-07 (late evening):** the algorithm we set out to RE turned out to already be reverse-engineered — `saab_security_project/SAABSecurityAccess/python_server/security_calc.py` produces matching keys for all 12 ground-truth `(algo, seed, key)` tuples in `~/Desktop/tis2web_logs/ground_truth.md`. See `captures/2026-05-07-algorithm-already-RE.md` for the validation. The shim's role is now reduced from "extract the algorithm" to "confirm Tech2 still uses the same algorithm class for the `$0B` flow." The ECM-side bench unlock path is now: pull bench car's SSA card → run `scripts/decode_ssa_for_seed.py <ssa> --seed <captured_seed>` → get the key.
+
+The text below describes the original investigation in case the algorithm changes again or we need to re-RE for a different ECU class.
+
+---
+
 You are taking over a SAAB SecurityAccess reverse-engineering effort. The shim is working; we are deep into Phase 2, with one specific question still open. Read this in full before touching code.
 
 ## What we're trying to do (one paragraph)
