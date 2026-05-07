@@ -127,10 +127,18 @@ T_PDU_ERROR PDUAPI PDUGetEventItem(UNUM32 hMod, UNUM32 hCLL, void** pEventItem) 
                  hMod, hCLL, ev->ItemType, ev->EventType, ev->hCop, ev->Timestamp);
         // For result events, dereference and dump the byte payload —
         // this is where the seed/key response lives.
+        // Chipsoft uses EventType as a monotonic counter, not ISO 22900-2's
+        // 0x0010 constant, so we gate on ItemType alone. Some 0x1300 events
+        // may have pData pointing to non-PDU_RESULT_DATA memory, so we wrap
+        // in SEH to survive bad pointers without crashing Tech2Win.
         if (ev->ItemType == 0x1300 /* PDU_IT_RESULT */ && ev->pData) {
-            PDU_RESULT_DATA_MIN* rd = (PDU_RESULT_DATA_MIN*)ev->pData;
-            if (rd->pDataBytes && rd->NumDataBytes > 0 && rd->NumDataBytes <= 4096) {
-                shim_log_hex("RSP-PDU", rd->pDataBytes, rd->NumDataBytes);
+            __try {
+                PDU_RESULT_DATA_MIN* rd = (PDU_RESULT_DATA_MIN*)ev->pData;
+                if (rd->pDataBytes && rd->NumDataBytes > 0 && rd->NumDataBytes <= 4096) {
+                    shim_log_hex("RSP-PDU", rd->pDataBytes, rd->NumDataBytes);
+                }
+            } __except(EXCEPTION_EXECUTE_HANDLER) {
+                shim_log("ERR  |PDUGetEventItem|RSP-PDU decode fault pData=%p", ev->pData);
             }
         }
     }
