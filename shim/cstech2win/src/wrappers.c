@@ -132,11 +132,42 @@ T_PDU_ERROR PDUAPI PDUGetEventItem(UNUM32 hMod, UNUM32 hCLL, void** pEventItem) 
         // may have pData pointing to non-PDU_RESULT_DATA memory, so we wrap
         // in SEH to survive bad pointers without crashing Tech2Win.
         if (ev->ItemType == 0x1300 /* PDU_IT_RESULT */) {
+            UNUM8* item_bytes = (UNUM8*)*pEventItem;
             __try {
                 // Dump exactly 24 bytes (standard ISO size) to see what's inside.
-                shim_log_hex("EVT-RAW", (UNUM8*)*pEventItem, 24);
+                shim_log_hex("EVT-RAW", item_bytes, 24);
             } __except(EXCEPTION_EXECUTE_HANDLER) {
                 shim_log("ERR  |PDUGetEventItem|fault dumping event item raw bytes");
+            }
+            // Phase 2 layout discovery (see HANDOFF.md):
+            // The 2026-05-06 64-byte dump showed Chipsoft's PDU_EVENT_ITEM has
+            // a variant layout. For EventType=0x114, response bytes are inline
+            // at offset 32. For EventType=0xF3 (the $27 0B path we're tracking),
+            // they're not inline — they live behind a pointer stored at offset
+            // 12 or 16. Dump both with SEH guards. Whichever reliably contains
+            // the UDS response bytes (look for "67 0B" after $27 0B requests)
+            // is our seed source for the next decoder iteration.
+            UNUM8* p12 = NULL;
+            UNUM8* p16 = NULL;
+            __try {
+                p12 = *(UNUM8**)(item_bytes + 12);
+                p16 = *(UNUM8**)(item_bytes + 16);
+            } __except(EXCEPTION_EXECUTE_HANDLER) {
+                p12 = NULL; p16 = NULL;
+            }
+            if (p12) {
+                __try {
+                    shim_log_hex("PTR12-DEREF", p12, 32);
+                } __except(EXCEPTION_EXECUTE_HANDLER) {
+                    shim_log("ERR  |PDUGetEventItem|ptr12 fault p12=%p", p12);
+                }
+            }
+            if (p16) {
+                __try {
+                    shim_log_hex("PTR16-DEREF", p16, 32);
+                } __except(EXCEPTION_EXECUTE_HANDLER) {
+                    shim_log("ERR  |PDUGetEventItem|ptr16 fault p16=%p", p16);
+                }
             }
         }
     }
