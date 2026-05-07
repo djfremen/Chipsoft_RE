@@ -133,16 +133,8 @@ T_PDU_ERROR PDUAPI PDUGetEventItem(UNUM32 hMod, UNUM32 hCLL, void** pEventItem) 
         // in SEH to survive bad pointers without crashing Tech2Win.
         if (ev->ItemType == 0x1300 /* PDU_IT_RESULT */) {
             __try {
-                // Dump raw DWORD values at offsets 0..40 of the event item
-                // to figure out Chipsoft's actual struct layout.
-                UNUM32* raw = (UNUM32*)*pEventItem;
-                shim_log("RAW  |PDUGetEventItem|"
-                         "dw0=%08X dw1=%08X dw2=%08X dw3=%08X "
-                         "dw4=%08X dw5=%08X dw6=%08X dw7=%08X "
-                         "dw8=%08X dw9=%08X",
-                         raw[0], raw[1], raw[2], raw[3],
-                         raw[4], raw[5], raw[6], raw[7],
-                         raw[8], raw[9]);
+                // Dump exactly 24 bytes (standard ISO size) to see what's inside.
+                shim_log_hex("EVT-RAW", (UNUM8*)*pEventItem, 24);
             } __except(EXCEPTION_EXECUTE_HANDLER) {
                 shim_log("ERR  |PDUGetEventItem|fault dumping event item raw bytes");
             }
