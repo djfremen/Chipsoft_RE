@@ -12,11 +12,25 @@ Headline finding from the 2026-05-06 capture (`captures/2026-05-06-shim-v1-first
 
 There are two distinct questions in flight. The first is mechanical (decode the next capture). The second is strategic (decide what we still need to capture).
 
-### Q1 — mechanical: where do `$27 $0B` response bytes live? **(ANSWERED 2026-05-07: in the callback's `pData`)**
+### Q1 — mechanical: where do `$27 $0B` response bytes live? **(ANSWERED 2026-05-07 v2: in `PDU_EVENT_ITEM.pData->pDataBytes`, after fixing our struct layout)**
 
-**Resolution:** confirmed via run 4 (`captures/2026-05-07-shim-v4-rsp-payload.md`). The response is **not** in any `PDUGetEventItem` queue field, no matter how deep we dereference. Read-data services (`$1A`, `$AA`, etc.) come through the queue cleanly; SecurityAccess (`$27`) responses arrive via the callback Tech2 registered through `PDURegisterEventCallback`. The current commit adds 16 pre-generated `__stdcall` trampolines that intercept those callbacks, log args + a 64-byte hex dump of `pData`, then forward to the real callback. **Next capture should reveal `67 0B SS SS` inside a `CB-DATA` hex dump.**
+**Real resolution:** the canonical ISO 22900-2 `PDU_EVENT_ITEM` from JohnJocke's `pdu_api.h` ([github.com/JohnJocke/dpdu-passthru](https://github.com/JohnJocke/dpdu-passthru)) is 20 bytes — `{ItemType, hCop, pCoPTag, Timestamp, pData}` with `pData` at offset 16. Our shim had a phantom `EventType` field at offset 4 that didn't exist, shifting every subsequent field by 4 bytes. What we logged as `EventType=0xF3` was actually `hCop`, what we logged as `pCoPTag` was the real Timestamp's high bytes, and `pData` was misread.
 
-If even the callback path doesn't carry the bytes, the seed→key transform may be running entirely inside CSTech2Win.dll itself (never exposed to the host). At that point switch to static analysis of the DLL.
+`pData` for a PDU_IT_RESULT item points to a 44-byte `PDU_RESULT_DATA` whose `pDataBytes` (offset 40, length at offset 36) holds the UDS bytes. For ISO 15765 the first 4 bytes of pDataBytes are the CAN ID (big-endian), then the UDS payload — same layout we already saw inline in some RSP-PAYLOAD dumps as a coincidence of nearby heap.
+
+**Implication:** every prior capture has the seed bytes in it; we just couldn't read them because we were following the wrong pointer. The current commit replaces the struct + decode logic with the canonical layout. Next run should produce `RSP-UDS` lines like:
+```
+RSP-UDS | len=8 | 00 00 06 41 67 0B SS SS
+        └── CAN ID ──┘ └── UDS ──┘
+```
+
+The callback-trampoline path landed in `289a87b` is still useful as a backup channel (e.g. for service classes that bypass the queue), but the queue path is what we should rely on now.
+
+### Earlier history (kept for the autopsy)
+
+- Run 3 dereferenced offset-12 and offset-16 pointers in the event-item buffer (bottom-up layout discovery).
+- Run 4 dereferenced inner pointer of what we then-incorrectly called PTR16's `{length, ptr}` table — yielded a 16-byte metadata header + 4-byte CAN ID + UDS payload **for read-data services** (`$1A`, `$AA`). The "table" interpretation was wrong: we were actually looking at PDU_RESULT_DATA's RxFlag, and the heap-adjacent bytes happened to contain unrelated UDS frames. **Empty for `$27 $0B`.**
+- That false negative drove us to the callback-hook hypothesis (`289a87b`), which was unnecessary once we discovered the struct layout was off-by-one-field.
 
 ### Q1 history (kept for context)
 

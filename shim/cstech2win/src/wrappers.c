@@ -95,112 +95,94 @@ T_PDU_ERROR PDUAPI PDUStartComPrimitive(UNUM32 hMod, UNUM32 hCLL,
     return r;
 }
 
-// PDU_EVENT_ITEM minimal layout (ISO 22900-2). We only read what we need.
-typedef struct {
-    UNUM32  ItemType;
-    UNUM32  EventType;     // 0x0001=DATA_AVAILABLE, 0x0010=PDU_EVT_RESULT
-    UNUM32  hCop;
-    UNUM32  Timestamp;
-    void*   pCopTag;
-    void*   pData;         // for RESULT events: PDU_RESULT_DATA*
-} PDU_EVENT_ITEM_MIN;
+// Canonical ISO 22900-2 D-PDU API struct layouts.
+// Reference: pdu_api.h from github.com/JohnJocke/dpdu-passthru (GPL-3.0 project,
+// header is the standardized D-PDU API spec; struct ABI is canonical).
+//
+// Earlier versions of this file had an incorrect PDU_EVENT_ITEM with a phantom
+// "EventType" field at offset 4, leading us to mis-decode several runs. The
+// values we logged as "EventType=0xF3 / 0x114" were actually the hCop field.
+// pData is at offset 16 of the event item and points to PDU_RESULT_DATA, whose
+// pDataBytes (the actual UDS bytes, including 4-byte CAN-ID prefix for
+// ISO15765) lives at offset 40 of THAT struct, with NumDataBytes at offset 36.
 
 typedef struct {
-    UNUM32  RxFlag;
-    UNUM32  TimingFlag;
-    UNUM32  ExtraInfo;
-    UNUM32  UniqueRespIdentifier;
-    UNUM32  AcceptanceId;
-    UNUM32  Timestamp;
-    UNUM32  NumDataBytes;
-    UNUM8*  pDataBytes;
-    UNUM32  NumExtraInfo;
-    void*   pExtraInfo;
-} PDU_RESULT_DATA_MIN;
+    UNUM32  ItemType;      // offset 0  : 0x1300=PDU_IT_RESULT, 0x1301=PDU_IT_STATUS,
+                           //             0x1304=PDU_IT_ERROR, 0x1305=PDU_IT_INFO
+    UNUM32  hCop;          // offset 4  : ComPrimitive handle from PDUStartComPrimitive
+    void*   pCoPTag;       // offset 8  : caller-supplied tag (per-CLL constant for Tech2)
+    UNUM32  Timestamp;     // offset 12 : microseconds
+    void*   pData;         // offset 16 : for RESULT items: PDU_RESULT_DATA*
+} PDU_EVENT_ITEM_MIN;      // 20 bytes total
+
+// PDU_FLAG_DATA appears inline in PDU_RESULT_DATA twice (RxFlag + TimestampFlags).
+// 8 bytes per: { UNUM32 NumFlagBytes; UNUM8* pFlagData; }
+typedef struct {
+    UNUM32  RxFlag_NumFlagBytes;       // offset 0
+    UNUM8*  RxFlag_pFlagData;          // offset 4
+    UNUM32  UniqueRespIdentifier;      // offset 8
+    UNUM32  AcceptanceId;              // offset 12
+    UNUM32  TimestampFlags_NumBytes;   // offset 16
+    UNUM8*  TimestampFlags_pFlagData;  // offset 20
+    UNUM32  TxMsgDoneTimestamp;        // offset 24
+    UNUM32  StartMsgTimestamp;         // offset 28
+    void*   pExtraInfo;                // offset 32
+    UNUM32  NumDataBytes;              // offset 36 — length of pDataBytes
+    UNUM8*  pDataBytes;                // offset 40 — actual UDS bytes (CAN-ID + payload)
+} PDU_RESULT_DATA_MIN;     // 44 bytes total
 
 T_PDU_ERROR PDUAPI PDUGetEventItem(UNUM32 hMod, UNUM32 hCLL, void** pEventItem) {
     T_PDU_ERROR r = ((fn_PDUGetEventItem)g_real_PDUGetEventItem)(hMod, hCLL, pEventItem);
     if (r == 0 && pEventItem && *pEventItem) {
         PDU_EVENT_ITEM_MIN* ev = (PDU_EVENT_ITEM_MIN*)*pEventItem;
         shim_log("EVT  |PDUGetEventItem|hMod=0x%08X hCLL=0x%08X "
-                 "ItemType=0x%X EventType=0x%X hCop=0x%08X ts=%u",
-                 hMod, hCLL, ev->ItemType, ev->EventType, ev->hCop, ev->Timestamp);
-        // For result events, dereference and dump the byte payload —
-        // this is where the seed/key response lives.
-        // Chipsoft uses EventType as a monotonic counter, not ISO 22900-2's
-        // 0x0010 constant, so we gate on ItemType alone. Some 0x1300 events
-        // may have pData pointing to non-PDU_RESULT_DATA memory, so we wrap
-        // in SEH to survive bad pointers without crashing Tech2Win.
-        if (ev->ItemType == 0x1300 /* PDU_IT_RESULT */) {
-            UNUM8* item_bytes = (UNUM8*)*pEventItem;
+                 "ItemType=0x%X hCop=0x%X pCoPTag=%p ts=%u pData=%p",
+                 hMod, hCLL, ev->ItemType, ev->hCop, ev->pCoPTag,
+                 ev->Timestamp, ev->pData);
+
+        // PDU_IT_RESULT items carry the response in pData -> PDU_RESULT_DATA.
+        // pDataBytes (offset 40 of PDU_RESULT_DATA) points to the UDS frame:
+        // for ISO 15765 the first 4 bytes are CAN ID (BE), then UDS payload.
+        // NumDataBytes (offset 36) is the length.
+        if (ev->ItemType == 0x1300 /* PDU_IT_RESULT */ && ev->pData) {
             __try {
-                // Dump exactly 24 bytes (standard ISO size) to see what's inside.
-                shim_log_hex("EVT-RAW", item_bytes, 24);
-            } __except(EXCEPTION_EXECUTE_HANDLER) {
-                shim_log("ERR  |PDUGetEventItem|fault dumping event item raw bytes");
+                PDU_RESULT_DATA_MIN* rd = (PDU_RESULT_DATA_MIN*)ev->pData;
+                UNUM32 n = rd->NumDataBytes;
+                UNUM8* p = rd->pDataBytes;
+                shim_log("RSP  |hCop=0x%X RxFlagBytes=%u UniqueRespId=0x%X "
+                         "AcceptanceId=0x%X TxDone=%u StartMsg=%u NumDataBytes=%u pDataBytes=%p",
+                         ev->hCop,
+                         rd->RxFlag_NumFlagBytes,
+                         rd->UniqueRespIdentifier,
+                         rd->AcceptanceId,
+                         rd->TxMsgDoneTimestamp,
+                         rd->StartMsgTimestamp,
+                         n, p);
+                if (p && n > 0 && n <= 4096) {
+                    shim_log_hex("RSP-UDS", p, n);
+                }
+                // Also dump RxFlag bytes if present — useful for diagnosing
+                // why a $27 response might be flagged differently than $1A.
+                if (rd->RxFlag_pFlagData && rd->RxFlag_NumFlagBytes > 0
+                                         && rd->RxFlag_NumFlagBytes <= 64) {
+                    shim_log_hex("RSP-RxFlag", rd->RxFlag_pFlagData,
+                                 rd->RxFlag_NumFlagBytes);
+                }
+            } __except (EXCEPTION_EXECUTE_HANDLER) {
+                shim_log("ERR  |PDUGetEventItem|RSP decode fault pData=%p",
+                         ev->pData);
             }
-            // Phase 2 layout discovery (see HANDOFF.md):
-            // The 2026-05-06 64-byte dump showed Chipsoft's PDU_EVENT_ITEM has
-            // a variant layout. For EventType=0x114, response bytes are inline
-            // at offset 32. For EventType=0xF3 (the $27 0B path we're tracking),
-            // they're not inline — they live behind a pointer stored at offset
-            // 12 or 16. Dump both with SEH guards. Whichever reliably contains
-            // the UDS response bytes (look for "67 0B" after $27 0B requests)
-            // is our seed source for the next decoder iteration.
-            UNUM8* p12 = NULL;
-            UNUM8* p16 = NULL;
+        }
+        // PDU_IT_ERROR items carry diagnostic error info — log it so we know
+        // when Tech2 sees a stack-level problem.
+        else if (ev->ItemType == 0x1304 /* PDU_IT_ERROR */ && ev->pData) {
             __try {
-                p12 = *(UNUM8**)(item_bytes + 12);
-                p16 = *(UNUM8**)(item_bytes + 16);
-            } __except(EXCEPTION_EXECUTE_HANDLER) {
-                p12 = NULL; p16 = NULL;
-            }
-            if (p12) {
-                __try {
-                    shim_log_hex("PTR12-DEREF", p12, 32);
-                } __except(EXCEPTION_EXECUTE_HANDLER) {
-                    shim_log("ERR  |PDUGetEventItem|ptr12 fault p12=%p", p12);
-                }
-            }
-            if (p16) {
-                __try {
-                    shim_log_hex("PTR16-DEREF", p16, 32);
-                } __except(EXCEPTION_EXECUTE_HANDLER) {
-                    shim_log("ERR  |PDUGetEventItem|ptr16 fault p16=%p", p16);
-                }
-                // 2026-05-06 run 4 finding (HANDOFF.md Q1):
-                // PTR16-DEREF reveals a {length, ptr_to_data} table at offset 0:
-                //   bytes 0-3 = length (often 4, matching $27 0B response size)
-                //   bytes 4-7 = pointer to actual UDS response payload
-                // Dereference that inner pointer to extract the seed bytes.
-                UNUM8* pPayload = NULL;
-                __try {
-                    pPayload = *(UNUM8**)(p16 + 4);
-                } __except(EXCEPTION_EXECUTE_HANDLER) {
-                    pPayload = NULL;
-                }
-                if (pPayload) {
-                    __try {
-                        shim_log_hex("RSP-PAYLOAD", pPayload, 32);
-                    } __except(EXCEPTION_EXECUTE_HANDLER) {
-                        shim_log("ERR  |PDUGetEventItem|payload fault pPayload=%p", pPayload);
-                    }
-                }
-                // Some events have a second {length, ptr} pair at offset 16
-                // of the table — dump that too in case the seed lives there.
-                UNUM8* pPayload2 = NULL;
-                __try {
-                    pPayload2 = *(UNUM8**)(p16 + 20);
-                } __except(EXCEPTION_EXECUTE_HANDLER) {
-                    pPayload2 = NULL;
-                }
-                if (pPayload2) {
-                    __try {
-                        shim_log_hex("RSP-PAYLOAD2", pPayload2, 32);
-                    } __except(EXCEPTION_EXECUTE_HANDLER) {
-                        shim_log("ERR  |PDUGetEventItem|payload2 fault pPayload2=%p", pPayload2);
-                    }
-                }
+                UNUM32 errCodeId = ((UNUM32*)ev->pData)[0];
+                UNUM32 extraInfo = ((UNUM32*)ev->pData)[1];
+                shim_log("ERR-EVT|hCop=0x%X ErrorCodeId=0x%X ExtraErrorInfo=0x%X",
+                         ev->hCop, errCodeId, extraInfo);
+            } __except (EXCEPTION_EXECUTE_HANDLER) {
+                shim_log("ERR  |PDUGetEventItem|err-evt decode fault");
             }
         }
     }
