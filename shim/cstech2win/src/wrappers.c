@@ -207,11 +207,103 @@ T_PDU_ERROR PDUAPI PDUGetEventItem(UNUM32 hMod, UNUM32 hCLL, void** pEventItem) 
     return r;
 }
 
+// ---- Callback trampolines ---------------------------------------------------
+//
+// 2026-05-07 finding (HANDOFF.md option 3): SecurityAccess responses ($27 $0B
+// seed/key) do NOT surface in PDUGetEventItem result events. They arrive via
+// the callback Tech2 registers through PDURegisterEventCallback. The callback
+// signature is __stdcall void (UNUM32 hMod, UNUM32 hCLL, void* pData).
+//
+// To intercept, we substitute the caller's cb with one of N pre-generated
+// trampolines. Each trampoline knows its slot index at compile time and uses
+// it to look up the real cb in g_cb_slots[]. The dispatcher logs args + the
+// pData buffer (which carries the response bytes), then forwards to the real
+// cb. Tech2 only registered 3 callbacks in the run-5 capture, so 16 slots is
+// generous.
+
+typedef void (PDUAPI *cb_t)(UNUM32 hMod, UNUM32 hCLL, void* pData);
+
+#define MAX_CB_SLOTS 16
+
+static struct {
+    cb_t   real_cb;
+    UNUM32 hMod;
+    UNUM32 hCLL;
+    int    used;
+} g_cb_slots[MAX_CB_SLOTS];
+static int g_cb_count = 0;
+static CRITICAL_SECTION g_cb_lock;
+static int g_cb_lock_initialized = 0;
+
+static void common_cb_dispatch(int slot, UNUM32 hMod, UNUM32 hCLL, void* pData) {
+    shim_log("CB   |fired|slot=%d hMod=0x%08X hCLL=0x%08X pData=%p",
+             slot, hMod, hCLL, pData);
+    // Dump the pData buffer — this is where the seed bytes live for $27 $0B.
+    // Size unknown; 64 is generous enough to contain any UDS response plus
+    // whatever metadata Chipsoft prepends/appends.
+    if (pData) {
+        __try {
+            shim_log_hex("CB-DATA", pData, 64);
+        } __except (EXCEPTION_EXECUTE_HANDLER) {
+            shim_log("ERR  |CB|data fault pData=%p", pData);
+        }
+    }
+    cb_t real = g_cb_slots[slot].real_cb;
+    if (real) {
+        real(hMod, hCLL, pData);
+    }
+}
+
+#define DEFINE_CB_TRAMP(N) \
+    static void PDUAPI cb_tramp_##N(UNUM32 hMod, UNUM32 hCLL, void* pData) { \
+        common_cb_dispatch(N, hMod, hCLL, pData); \
+    }
+
+DEFINE_CB_TRAMP(0)  DEFINE_CB_TRAMP(1)  DEFINE_CB_TRAMP(2)  DEFINE_CB_TRAMP(3)
+DEFINE_CB_TRAMP(4)  DEFINE_CB_TRAMP(5)  DEFINE_CB_TRAMP(6)  DEFINE_CB_TRAMP(7)
+DEFINE_CB_TRAMP(8)  DEFINE_CB_TRAMP(9)  DEFINE_CB_TRAMP(10) DEFINE_CB_TRAMP(11)
+DEFINE_CB_TRAMP(12) DEFINE_CB_TRAMP(13) DEFINE_CB_TRAMP(14) DEFINE_CB_TRAMP(15)
+
+static cb_t g_tramps[MAX_CB_SLOTS] = {
+    cb_tramp_0,  cb_tramp_1,  cb_tramp_2,  cb_tramp_3,
+    cb_tramp_4,  cb_tramp_5,  cb_tramp_6,  cb_tramp_7,
+    cb_tramp_8,  cb_tramp_9,  cb_tramp_10, cb_tramp_11,
+    cb_tramp_12, cb_tramp_13, cb_tramp_14, cb_tramp_15,
+};
+
 T_PDU_ERROR PDUAPI PDURegisterEventCallback(UNUM32 hMod, UNUM32 hCLL,
                                             void (PDUAPI *cb)(UNUM32, UNUM32, void*)) {
     shim_log("CALL |PDURegisterEventCallback|hMod=0x%08X hCLL=0x%08X cb=%p",
              hMod, hCLL, (void*)cb);
-    T_PDU_ERROR r = ((fn_PDURegisterEventCallback)g_real_PDURegisterEventCallback)(hMod, hCLL, cb);
+
+    // Lazy-init the lock on first call (DllMain isn't always a safe place
+    // to do this; this gets us the same effect with fewer constraints).
+    if (!g_cb_lock_initialized) {
+        InitializeCriticalSection(&g_cb_lock);
+        g_cb_lock_initialized = 1;
+    }
+
+    cb_t passed_cb = (cb_t)cb;
+    int slot = -1;
+    EnterCriticalSection(&g_cb_lock);
+    if (g_cb_count < MAX_CB_SLOTS && cb != NULL) {
+        slot = g_cb_count++;
+        g_cb_slots[slot].real_cb = passed_cb;
+        g_cb_slots[slot].hMod = hMod;
+        g_cb_slots[slot].hCLL = hCLL;
+        g_cb_slots[slot].used = 1;
+    }
+    LeaveCriticalSection(&g_cb_lock);
+
+    if (slot >= 0) {
+        passed_cb = g_tramps[slot];
+        shim_log("CB   |register|slot=%d real=%p tramp=%p", slot, (void*)cb, (void*)passed_cb);
+    } else if (cb != NULL) {
+        shim_log("WARN |register|no free slot, passing real cb through (cb=%p)", (void*)cb);
+    }
+
+    T_PDU_ERROR r = ((fn_PDURegisterEventCallback)g_real_PDURegisterEventCallback)(
+        hMod, hCLL, (void (PDUAPI*)(UNUM32, UNUM32, void*))passed_cb);
     shim_log("RET  |PDURegisterEventCallback|err=%u", r);
     return r;
 }

@@ -12,9 +12,19 @@ Headline finding from the 2026-05-06 capture (`captures/2026-05-06-shim-v1-first
 
 There are two distinct questions in flight. The first is mechanical (decode the next capture). The second is strategic (decide what we still need to capture).
 
-### Q1 — mechanical: where do `EventType=0xF3` response bytes live?
+### Q1 — mechanical: where do `$27 $0B` response bytes live? **(ANSWERED 2026-05-07: in the callback's `pData`)**
 
-We have the **request** bytes (`27 0B` to CAN `$0241`) — `REQ-PDU` lines log them cleanly. We do not yet have the **response** bytes (the 16-bit seed, then later the 16-bit key). They arrive into `PDUGetEventItem` as `ItemType=0x1300 EventType=0xF3` events, but Chipsoft's `PDU_EVENT_ITEM` struct does not match the ISO 22900-2 layout — what should be a `void* pData` at offset 20 is sometimes a small int (e.g. `0x0C`, `0x1A`) and sometimes high-bit flag values like `0x80001200`. Dereferencing it always faults under SEH.
+**Resolution:** confirmed via run 4 (`captures/2026-05-07-shim-v4-rsp-payload.md`). The response is **not** in any `PDUGetEventItem` queue field, no matter how deep we dereference. Read-data services (`$1A`, `$AA`, etc.) come through the queue cleanly; SecurityAccess (`$27`) responses arrive via the callback Tech2 registered through `PDURegisterEventCallback`. The current commit adds 16 pre-generated `__stdcall` trampolines that intercept those callbacks, log args + a 64-byte hex dump of `pData`, then forward to the real callback. **Next capture should reveal `67 0B SS SS` inside a `CB-DATA` hex dump.**
+
+If even the callback path doesn't carry the bytes, the seed→key transform may be running entirely inside CSTech2Win.dll itself (never exposed to the host). At that point switch to static analysis of the DLL.
+
+### Q1 history (kept for context)
+
+We have the **request** bytes (`27 0B` to CAN `$0241`) — `REQ-PDU` lines log them cleanly. The response bytes live behind a layered indirection chain that turned out NOT to exist for `$27 $0B`:
+
+- ISO 22900-2 says `PDU_EVENT_ITEM.pData` is a `PDU_RESULT_DATA*`. Chipsoft puts a small int there (e.g. `0x0C`, `0x1A`) — faults on deref.
+- Run 3 dereferenced offset-12 and offset-16 pointers in the event-item buffer. Offset 16 yielded a `{length, ptr_to_data}` table.
+- Run 4 dereferenced the inner pointer in that table. Yielded a 16-byte metadata header + 4-byte CAN ID + UDS payload — for read-data services. **Empty for `$27 $0B`.** That's the chain that finally proved responses don't go through this path at all for SecurityAccess.
 
 ### Q2 — strategic: does the `$27 $0B` algorithm depend on SSA context?
 
