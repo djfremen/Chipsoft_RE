@@ -127,7 +127,7 @@ T_PDU_ERROR PDUAPI PDUGetEventItem(UNUM32 hMod, UNUM32 hCLL, void** pEventItem) 
                  hMod, hCLL, ev->ItemType, ev->EventType, ev->hCop, ev->Timestamp);
         // For result events, dereference and dump the byte payload —
         // this is where the seed/key response lives.
-        if (ev->ItemType == 0x1300 /* PDU_IT_RESULT */ && ev->EventType == 0x0010 /* PDU_EVT_RESULT */ && ev->pData) {
+        if (ev->ItemType == 0x1300 /* PDU_IT_RESULT */ && ev->pData) {
             PDU_RESULT_DATA_MIN* rd = (PDU_RESULT_DATA_MIN*)ev->pData;
             if (rd->pDataBytes && rd->NumDataBytes > 0 && rd->NumDataBytes <= 4096) {
                 shim_log_hex("RSP-PDU", rd->pDataBytes, rd->NumDataBytes);
