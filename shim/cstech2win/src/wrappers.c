@@ -168,6 +168,39 @@ T_PDU_ERROR PDUAPI PDUGetEventItem(UNUM32 hMod, UNUM32 hCLL, void** pEventItem) 
                 } __except(EXCEPTION_EXECUTE_HANDLER) {
                     shim_log("ERR  |PDUGetEventItem|ptr16 fault p16=%p", p16);
                 }
+                // 2026-05-06 run 4 finding (HANDOFF.md Q1):
+                // PTR16-DEREF reveals a {length, ptr_to_data} table at offset 0:
+                //   bytes 0-3 = length (often 4, matching $27 0B response size)
+                //   bytes 4-7 = pointer to actual UDS response payload
+                // Dereference that inner pointer to extract the seed bytes.
+                UNUM8* pPayload = NULL;
+                __try {
+                    pPayload = *(UNUM8**)(p16 + 4);
+                } __except(EXCEPTION_EXECUTE_HANDLER) {
+                    pPayload = NULL;
+                }
+                if (pPayload) {
+                    __try {
+                        shim_log_hex("RSP-PAYLOAD", pPayload, 32);
+                    } __except(EXCEPTION_EXECUTE_HANDLER) {
+                        shim_log("ERR  |PDUGetEventItem|payload fault pPayload=%p", pPayload);
+                    }
+                }
+                // Some events have a second {length, ptr} pair at offset 16
+                // of the table — dump that too in case the seed lives there.
+                UNUM8* pPayload2 = NULL;
+                __try {
+                    pPayload2 = *(UNUM8**)(p16 + 20);
+                } __except(EXCEPTION_EXECUTE_HANDLER) {
+                    pPayload2 = NULL;
+                }
+                if (pPayload2) {
+                    __try {
+                        shim_log_hex("RSP-PAYLOAD2", pPayload2, 32);
+                    } __except(EXCEPTION_EXECUTE_HANDLER) {
+                        shim_log("ERR  |PDUGetEventItem|payload2 fault pPayload2=%p", pPayload2);
+                    }
+                }
             }
         }
     }
