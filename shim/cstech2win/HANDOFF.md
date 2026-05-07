@@ -8,9 +8,30 @@ Tech2Win unlocks SAAB ECMs via a SecurityAccess flow whose seed→key transform 
 
 Headline finding from the 2026-05-06 capture (`captures/2026-05-06-shim-v1-first-run.md`): Tech2Win sends `$27 $0B` to the engine ECM (CAN `$0241`). Per GMW3110 §8.8.2.1 (`wiki/sources/gmw3110-2010-quick-ref.md` in the parent `saab-security-access` repo), `$0B` is in the vehicle-manufacturer-specific range — confirming this is the SAAB-specific SAS/IMMO-mediated SecurityAccess level, distinct from the standard SPS `$01/$02` level that Trionic.NET already solves. **`$27 $0B` is the level we need the seed→key transform for.**
 
-## The open question, precisely
+## Two open questions
+
+There are two distinct questions in flight. The first is mechanical (decode the next capture). The second is strategic (decide what we still need to capture).
+
+### Q1 — mechanical: where do `EventType=0xF3` response bytes live?
 
 We have the **request** bytes (`27 0B` to CAN `$0241`) — `REQ-PDU` lines log them cleanly. We do not yet have the **response** bytes (the 16-bit seed, then later the 16-bit key). They arrive into `PDUGetEventItem` as `ItemType=0x1300 EventType=0xF3` events, but Chipsoft's `PDU_EVENT_ITEM` struct does not match the ISO 22900-2 layout — what should be a `void* pData` at offset 20 is sometimes a small int (e.g. `0x0C`, `0x1A`) and sometimes high-bit flag values like `0x80001200`. Dereferencing it always faults under SEH.
+
+### Q2 — strategic: does the `$27 $0B` algorithm depend on SSA context?
+
+This is the question that determines what we ship in the Android client. The `$27 $0B` seed→key algorithm is one of two shapes:
+
+- **`key = f(seed)`** — pure function of the 2-byte seed. Same seed always yields same key. Once we have a few seed/key pairs, we can sweep input space or RE the function. Bojer becomes optional immediately.
+- **`key = f(seed, SSA_context)`** — depends on the 714-byte SSA card content (HWKID, IMMO codes, etc.) read separately. Same seed yields different keys for different cars. The Android client must read the SSA from the ECM (which it already does — see [Android J2534 Driver](../../wiki/projects/android-j2534-driver.md)) and feed both seed + SSA into the key function.
+
+The shape decides everything downstream:
+- If `f(seed)`: Trionic.NET-style table-driven RE is enough; the algorithm is small.
+- If `f(seed, SSA)`: we need to RE a much larger surface — likely involving HWKID-derived constants, possibly per-VIN-batch keys.
+
+**How to read the answer from a capture:** look at what Tech2 reads between `requestSeed` (`$27 $0B`) and `sendKey` (`$27 $0C`). If there's a `$1A`/`$23`/`$AA` read of the SSA region (probably DID `$3F` or memory-address read of the IMMO block) in that window, the algorithm needs SSA context. If Tech2 goes straight from seed to key with nothing else in between, it's `f(seed)` only — and we already have the SSA cached on the Android side from initial pairing.
+
+GMW3110 itself doesn't constrain this — §8.8 is silent on what the algorithm consumes. SAAB's Device Specification would tell us, but we don't have it. The shim capture is the cheapest way to find out.
+
+#### Where the response bytes might live
 
 A 64-byte raw dump (run 3, `cstech2win_shim_20260506-204051.log`, available in conversation/Drive history) revealed two important things:
 
@@ -32,6 +53,12 @@ In the next ~500 ms there will be one or two `EventType=0xF3` events. Each will 
 - `EVT-RAW` — first 24 bytes of the event-item struct
 - `PTR12-DEREF` — 32 bytes at the pointer stored at offset 12
 - `PTR16-DEREF` — 32 bytes at the pointer stored at offset 16
+
+**Then look beyond just the seed/key pair, to answer Q2:**
+- Find the `$27 $0B` request and the `$27 $0C` request (the sendKey that follows).
+- List every `REQ-PDU` line *between* those two requests, on the same `hCLL` (probably `hCLL=1`) and same target (`$0241`).
+- If you see any `$1A`, `$23`, or `$AA` reads in that window targeting the engine ECM, write them down — those are the inputs Tech2 is feeding into the key calculation. That tells you the algorithm shape (`f(seed)` vs `f(seed, SSA)`).
+- If the window is empty (just `$3E` TesterPresent and the `$27 $0C`), the algorithm is `f(seed)` only.
 
 **Look for `06 41 67 0B SS SS` (CAN `$0641` USDT response + UDS `$67 $0B` positive response + 16-bit seed) in either deref dump.**
 
