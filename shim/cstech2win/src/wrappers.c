@@ -125,9 +125,10 @@ T_PDU_ERROR PDUAPI PDUGetEventItem(UNUM32 hMod, UNUM32 hCLL, void** pEventItem) 
         shim_log("EVT  |PDUGetEventItem|hMod=0x%08X hCLL=0x%08X "
                  "ItemType=0x%X EventType=0x%X hCop=0x%08X ts=%u",
                  hMod, hCLL, ev->ItemType, ev->EventType, ev->hCop, ev->Timestamp);
-        // For result events, dereference and dump the byte payload —
-        // this is where the seed/key response lives.
-        if (ev->EventType == 0x0010 /* PDU_EVT_RESULT */ && ev->pData) {
+        // PDU_IT_RESULT items carry response bytes via pData -> PDU_RESULT_DATA.
+        // Gating on ItemType (not EventType) — Chipsoft uses EventType=0xF3 for
+        // its result events, observed in the 2026-05-06 capture.
+        if (ev->ItemType == 0x1300 /* PDU_IT_RESULT */ && ev->pData) {
             PDU_RESULT_DATA_MIN* rd = (PDU_RESULT_DATA_MIN*)ev->pData;
             if (rd->pDataBytes && rd->NumDataBytes > 0 && rd->NumDataBytes <= 4096) {
                 shim_log_hex("RSP-PDU", rd->pDataBytes, rd->NumDataBytes);
