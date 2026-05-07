@@ -131,14 +131,20 @@ T_PDU_ERROR PDUAPI PDUGetEventItem(UNUM32 hMod, UNUM32 hCLL, void** pEventItem) 
         // 0x0010 constant, so we gate on ItemType alone. Some 0x1300 events
         // may have pData pointing to non-PDU_RESULT_DATA memory, so we wrap
         // in SEH to survive bad pointers without crashing Tech2Win.
-        if (ev->ItemType == 0x1300 /* PDU_IT_RESULT */ && ev->pData) {
+        if (ev->ItemType == 0x1300 /* PDU_IT_RESULT */) {
             __try {
-                PDU_RESULT_DATA_MIN* rd = (PDU_RESULT_DATA_MIN*)ev->pData;
-                if (rd->pDataBytes && rd->NumDataBytes > 0 && rd->NumDataBytes <= 4096) {
-                    shim_log_hex("RSP-PDU", rd->pDataBytes, rd->NumDataBytes);
-                }
+                // Dump raw DWORD values at offsets 0..40 of the event item
+                // to figure out Chipsoft's actual struct layout.
+                UNUM32* raw = (UNUM32*)*pEventItem;
+                shim_log("RAW  |PDUGetEventItem|"
+                         "dw0=%08X dw1=%08X dw2=%08X dw3=%08X "
+                         "dw4=%08X dw5=%08X dw6=%08X dw7=%08X "
+                         "dw8=%08X dw9=%08X",
+                         raw[0], raw[1], raw[2], raw[3],
+                         raw[4], raw[5], raw[6], raw[7],
+                         raw[8], raw[9]);
             } __except(EXCEPTION_EXECUTE_HANDLER) {
-                shim_log("ERR  |PDUGetEventItem|RSP-PDU decode fault pData=%p", ev->pData);
+                shim_log("ERR  |PDUGetEventItem|fault dumping event item raw bytes");
             }
         }
     }
