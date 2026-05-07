@@ -1,0 +1,10 @@
+# cstech2win shim log
+# format: ms_since_attach | tid | event | function | detail
+# log file: C:\Users\ELITEB~1\AppData\Local\Temp\cstech2win_shim_20260507-000432.log
+0|6064|INIT |DLL_PROCESS_ATTACH pid=12772
+3|6064|INIT |loaded real DLL from 'C:\Program Files (x86)\CHIPSOFT_J2534_Pro_Driver\CSTech2Win_real.dll'
+5|6064|CALL |PDUConstruct|opt='' tag=00000000
+57|6064|RET  |PDUConstruct|err=0
+57|6064|CALL |PDUDestruct|
+72|6064|RET  |PDUDestruct|err=0
+73|6064|EXIT |DLL_PROCESS_DETACH pid=12772

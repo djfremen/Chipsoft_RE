@@ -1,0 +1,22 @@
+# cstech2win shim log
+# format: ms_since_attach | tid | event | function | detail
+# log file: C:\Users\ELITEB~1\AppData\Local\Temp\cstech2win_shim_20260507-015541.log
+0|3348|INIT |DLL_PROCESS_ATTACH pid=12508
+9|3348|INIT |loaded real DLL from 'C:\Program Files (x86)\CHIPSOFT_J2534_Pro_Driver\CSTech2Win_real.dll'
+12|3348|CALL |PDUConstruct|opt='' tag=00000000
+66|3348|RET  |PDUConstruct|err=0
+67|3348|CALL |PDURegisterEventCallback|hMod=0xFFFFFFFF hCLL=0xFFFFFFFF cb=00FA1E00
+69|3348|CB   |register|slot=0 real=00FA1E00 tramp=DISABLED
+70|3348|RET  |PDURegisterEventCallback|err=0
+73|3348|CALL |PDURegisterEventCallback|hMod=0x00000001 hCLL=0xFFFFFFFF cb=00FA1E00
+73|3348|CB   |register|slot=1 real=00FA1E00 tramp=DISABLED
+73|3348|RET  |PDURegisterEventCallback|err=0
+73|3348|CALL |PDUIoCtl|hMod=0x00000001 hCLL=0xFFFFFFFF cmd=0x000C0002
+81|3348|RET  |PDUIoCtl|err=0
+27477|3348|CALL |PDURegisterEventCallback|hMod=0x00000001 hCLL=0xFFFFFFFF cb=00000000
+27479|3348|RET  |PDURegisterEventCallback|err=0
+27480|3348|CALL |PDURegisterEventCallback|hMod=0xFFFFFFFF hCLL=0xFFFFFFFF cb=00000000
+27483|3348|RET  |PDURegisterEventCallback|err=0
+27484|3348|CALL |PDUDestruct|
+27493|3348|RET  |PDUDestruct|err=0
+27494|3348|EXIT |DLL_PROCESS_DETACH pid=12508

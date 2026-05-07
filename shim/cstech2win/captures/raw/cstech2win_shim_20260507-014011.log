@@ -1,0 +1,27 @@
+# cstech2win shim log
+# format: ms_since_attach | tid | event | function | detail
+# log file: C:\Users\ELITEB~1\AppData\Local\Temp\cstech2win_shim_20260507-014011.log
+0|3352|INIT |DLL_PROCESS_ATTACH pid=15776
+14|3352|INIT |loaded real DLL from 'C:\Program Files (x86)\CHIPSOFT_J2534_Pro_Driver\CSTech2Win_real.dll'
+16|3352|CALL |PDUConstruct|opt='' tag=00000000
+77|3352|RET  |PDUConstruct|err=0
+79|3352|CALL |PDURegisterEventCallback|hMod=0xFFFFFFFF hCLL=0xFFFFFFFF cb=00FA1E00
+82|3352|CB   |register|slot=0 real=00FA1E00 tramp=6CED14C0
+82|3352|RET  |PDURegisterEventCallback|err=0
+82|3352|CALL |PDURegisterEventCallback|hMod=0x00000001 hCLL=0xFFFFFFFF cb=00FA1E00
+82|3352|CB   |register|slot=1 real=00FA1E00 tramp=6CED14E0
+82|3352|RET  |PDURegisterEventCallback|err=0
+82|3352|CALL |PDUIoCtl|hMod=0x00000001 hCLL=0xFFFFFFFF cmd=0x000C0002
+92|3352|RET  |PDUIoCtl|err=0
+19618|12348|CALL |PDURegisterEventCallback|hMod=0x00000001 hCLL=0x00000001 cb=00FA8F60
+19619|12348|CB   |register|slot=2 real=00FA8F60 tramp=6CED1500
+19619|12348|RET  |PDURegisterEventCallback|err=0
+19619|12348|CALL |PDURegisterEventCallback|hMod=0x00000001 hCLL=0x00000002 cb=00FA8F80
+19620|12348|CB   |register|slot=3 real=00FA8F80 tramp=6CED1520
+19621|12348|RET  |PDURegisterEventCallback|err=0
+19621|12348|CALL |PDUIoCtl|hMod=0x00000001 hCLL=0x00000001 cmd=0x000C0001
+19622|12348|RET  |PDUIoCtl|err=0
+19623|12348|CALL |PDUIoCtl|hMod=0x00000001 hCLL=0x00000001 cmd=0x000C0000
+19623|12348|RET  |PDUIoCtl|err=0
+19696|12348|CB   |fired|slot=2 hMod=0x00000801 hCLL=0x00000001 pData=00000001
+19697|12348|HEX  |CB-DATA|len=64|19697|12348|ERR  |CB|data fault pData=00000001
