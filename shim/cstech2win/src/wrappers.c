@@ -278,8 +278,18 @@ T_PDU_ERROR PDUAPI PDURegisterEventCallback(UNUM32 hMod, UNUM32 hCLL,
     LeaveCriticalSection(&g_cb_lock);
 
     if (slot >= 0) {
-        passed_cb = g_tramps[slot];
-        shim_log("CB   |register|slot=%d real=%p tramp=%p", slot, (void*)cb, (void*)passed_cb);
+        // 2026-05-07: trampoline substitution DISABLED. Our 3-arg trampoline
+        // declaration mismatched Chipsoft's actual __stdcall callback signature
+        // (per pdu_api.h:723 it's 5 args: T_PDU_EVT_DATA, UNUM32 hMod,
+        // UNUM32 hCLL, void* pCllTag, void* pAPITag — total 20 bytes pushed by
+        // caller, but our trampoline pops 12, drifting Tech2's stack 8 bytes
+        // per call until crash). Slot tracking + registration logging stays so
+        // we can re-enable once the trampoline signature is corrected. Until
+        // then, the struct-layout-fixed PDUGetEventItem queue path is the
+        // primary mechanism. See HANDOFF.md.
+        // passed_cb = g_tramps[slot];     // <-- intentionally skipped
+        shim_log("CB   |register|slot=%d real=%p tramp=DISABLED",
+                 slot, (void*)cb);
     } else if (cb != NULL) {
         shim_log("WARN |register|no free slot, passing real cb through (cb=%p)", (void*)cb);
     }

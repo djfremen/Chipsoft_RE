@@ -24,7 +24,7 @@ RSP-UDS | len=8 | 00 00 06 41 67 0B SS SS
         └── CAN ID ──┘ └── UDS ──┘
 ```
 
-The callback-trampoline path landed in `289a87b` is still useful as a backup channel (e.g. for service classes that bypass the queue), but the queue path is what we should rely on now.
+**Trampoline status: DISABLED as of 2026-05-07.** The callback-trampoline path landed in `289a87b` had the wrong signature — declared 3-arg `(hMod, hCLL, pData)` but `pdu_api.h:723` shows the real callback is 5-arg `(T_PDU_EVT_DATA eventType, UNUM32 hMod, UNUM32 hCLL, void *pCllTag, void *pAPITag)`. With `__stdcall`, our trampoline popped 12 bytes per call but the caller pushed 20 → 8-byte stack drift per fire → Tech2 crashed. Slot tracking + `CB | register` logging is preserved so we can flip substitution back on once the signature is fixed; until then, the struct-layout-fixed `PDUGetEventItem` queue path is the primary mechanism.
 
 ### Earlier history (kept for the autopsy)
 
