@@ -21,11 +21,29 @@
 #include "shim.h"
 #include "wrappers.h"
 
-// ---- typedefs for the 6 instrumented exports --------------------------------
+// ---- typedefs for the 7 instrumented exports --------------------------------
+
+// T_PDU_PARAM (ISO 22900-2 §10.7) — passed to PDUSetComParam to configure
+// per-CLL communication parameters (ProtocolID, baud rate, J1962 pin map, etc).
+// ComParamDataType selects the layout of *pComParamData:
+//   0x8001 PDU_PT_UNUM32      — 4-byte unsigned int (e.g. baud rate)
+//   0x8002 PDU_PT_SNUM32      — 4-byte signed int
+//   0x8003 PDU_PT_BYTEFIELD   — { UNUM32 NumBytes; UNUM8* pBytes; } (e.g. PINS map)
+//   0x8004 PDU_PT_STRUCTFIELD — implementation-specific struct
+//   0x8005 PDU_PT_LONGFIELD   — { UNUM32 NumLongs; UNUM32* pLongs; }
+typedef struct {
+    UNUM32 ComParamId;        // offset 0
+    UNUM32 ComParamDataType;  // offset 4
+    UNUM32 ComParamClass;     // offset 8
+    void*  pComParamData;     // offset 12
+} T_PDU_PARAM_MIN;            // 16 bytes
+
 typedef T_PDU_ERROR (PDUAPI *fn_PDUConstruct)(CHAR8* OptionStr, void* pAPITag);
 typedef T_PDU_ERROR (PDUAPI *fn_PDUDestruct)(void);
 typedef T_PDU_ERROR (PDUAPI *fn_PDUIoCtl)(UNUM32 hMod, UNUM32 hCLL, UNUM32 IoCtlCommandId,
                                           void* pInputData, void** pOutputData);
+typedef T_PDU_ERROR (PDUAPI *fn_PDUSetComParam)(UNUM32 hMod, UNUM32 hCLL,
+                                                T_PDU_PARAM_MIN* pParam);
 typedef T_PDU_ERROR (PDUAPI *fn_PDUStartComPrimitive)(UNUM32 hMod, UNUM32 hCLL,
                                                      UNUM32 CoPType, UNUM32 CoPDataSize,
                                                      UNUM8* pCoPData, void* pCopCtrlData,
@@ -37,6 +55,7 @@ typedef T_PDU_ERROR (PDUAPI *fn_PDURegisterEventCallback)(UNUM32 hMod, UNUM32 hC
 FARPROC g_real_PDUConstruct = NULL;
 FARPROC g_real_PDUDestruct = NULL;
 FARPROC g_real_PDUIoCtl = NULL;
+FARPROC g_real_PDUSetComParam = NULL;
 FARPROC g_real_PDUStartComPrimitive = NULL;
 FARPROC g_real_PDUGetEventItem = NULL;
 FARPROC g_real_PDURegisterEventCallback = NULL;
@@ -45,6 +64,7 @@ void resolve_instrumented_exports(HMODULE hReal) {
     g_real_PDUConstruct           = GetProcAddress(hReal, "PDUConstruct");
     g_real_PDUDestruct            = GetProcAddress(hReal, "PDUDestruct");
     g_real_PDUIoCtl               = GetProcAddress(hReal, "PDUIoCtl");
+    g_real_PDUSetComParam         = GetProcAddress(hReal, "PDUSetComParam");
     g_real_PDUStartComPrimitive   = GetProcAddress(hReal, "PDUStartComPrimitive");
     g_real_PDUGetEventItem        = GetProcAddress(hReal, "PDUGetEventItem");
     g_real_PDURegisterEventCallback = GetProcAddress(hReal, "PDURegisterEventCallback");
@@ -68,11 +88,54 @@ T_PDU_ERROR PDUAPI PDUDestruct(void) {
 
 T_PDU_ERROR PDUAPI PDUIoCtl(UNUM32 hMod, UNUM32 hCLL, UNUM32 IoCtlCommandId,
                             void* pInputData, void** pOutputData) {
-    shim_log("CALL |PDUIoCtl|hMod=0x%08X hCLL=0x%08X cmd=0x%08X",
-             hMod, hCLL, IoCtlCommandId);
+    shim_log("CALL |PDUIoCtl|hMod=0x%08X hCLL=0x%08X cmd=0x%08X pIn=%p",
+             hMod, hCLL, IoCtlCommandId, pInputData);
+    // Per ISO 22900-2 §9.4 most IoCtls take a T_PDU_DATA_ITEM* whose first
+    // 12 bytes are {ItemType, NumDataBytes, pDataBytes}. Some take NULL
+    // (PDU_IOCTL_RESET, the 0x000C000x family seen on this firmware). Dump
+    // the first 32 bytes blindly under SEH so per-cmd struct knowledge is
+    // not required — analysis tooling can decode after the fact.
+    if (pInputData) {
+        __try {
+            shim_log_hex("IOCTL-IN", pInputData, 32);
+        } __except (EXCEPTION_EXECUTE_HANDLER) {
+            shim_log("ERR  |PDUIoCtl|pInputData fault pIn=%p", pInputData);
+        }
+    }
     T_PDU_ERROR r = ((fn_PDUIoCtl)g_real_PDUIoCtl)(hMod, hCLL, IoCtlCommandId,
                                                     pInputData, pOutputData);
     shim_log("RET  |PDUIoCtl|err=%u", r);
+    return r;
+}
+
+// PDUSetComParam (ISO 22900-2 §6.4.5) — host configures per-CLL communication
+// parameters: protocol ID, baud rate, J1962 pin map, timing windows, etc.
+// This is the D-PDU equivalent of J2534's PassThruIoctl SET_CONFIG and is the
+// missing piece for reproducing Tech2Win's init recipe in the Android client.
+//
+// We log the {ComParamId, DataType, Class} triple verbatim, plus 32 bytes of
+// pComParamData under SEH. For PT_UNUM32/PT_SNUM32 (DataType 0x8001/0x8002)
+// the first 4 bytes are the value. For PT_BYTEFIELD (0x8003) the first 4
+// bytes are NumBytes followed by a pointer — analysis tooling can chase that
+// pointer offline.
+T_PDU_ERROR PDUAPI PDUSetComParam(UNUM32 hMod, UNUM32 hCLL,
+                                  T_PDU_PARAM_MIN* pParam) {
+    shim_log("CALL |PDUSetComParam|hMod=0x%08X hCLL=0x%08X pParam=%p",
+             hMod, hCLL, pParam);
+    if (pParam) {
+        __try {
+            shim_log("PARAM|ComParamId=0x%08X DataType=0x%08X Class=0x%08X pData=%p",
+                     pParam->ComParamId, pParam->ComParamDataType,
+                     pParam->ComParamClass, pParam->pComParamData);
+            if (pParam->pComParamData) {
+                shim_log_hex("PARAM-DATA", pParam->pComParamData, 32);
+            }
+        } __except (EXCEPTION_EXECUTE_HANDLER) {
+            shim_log("ERR  |PDUSetComParam|param decode fault pParam=%p", pParam);
+        }
+    }
+    T_PDU_ERROR r = ((fn_PDUSetComParam)g_real_PDUSetComParam)(hMod, hCLL, pParam);
+    shim_log("RET  |PDUSetComParam|err=%u", r);
     return r;
 }
 

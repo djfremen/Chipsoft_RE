@@ -13,6 +13,7 @@ extern FARPROC g_real_PDUDestruct;
 extern FARPROC g_real_PDUGetEventItem;
 extern FARPROC g_real_PDUIoCtl;
 extern FARPROC g_real_PDURegisterEventCallback;
+extern FARPROC g_real_PDUSetComParam;
 extern FARPROC g_real_PDUStartComPrimitive;
 
 void resolve_instrumented_exports(HMODULE hReal);

@@ -26,7 +26,6 @@ FARPROC g_real_PDUGetVersion = NULL;
 FARPROC g_real_PDULockResource = NULL;
 FARPROC g_real_PDUModuleConnect = NULL;
 FARPROC g_real_PDUModuleDisconnect = NULL;
-FARPROC g_real_PDUSetComParam = NULL;
 FARPROC g_real_PDUSetUniqueRespIdTable = NULL;
 FARPROC g_real_PDUUnlockResource = NULL;
 
@@ -51,7 +50,6 @@ void resolve_passthrough_exports(HMODULE hReal) {
     g_real_PDULockResource = GetProcAddress(hReal, "PDULockResource");
     g_real_PDUModuleConnect = GetProcAddress(hReal, "PDUModuleConnect");
     g_real_PDUModuleDisconnect = GetProcAddress(hReal, "PDUModuleDisconnect");
-    g_real_PDUSetComParam = GetProcAddress(hReal, "PDUSetComParam");
     g_real_PDUSetUniqueRespIdTable = GetProcAddress(hReal, "PDUSetUniqueRespIdTable");
     g_real_PDUUnlockResource = GetProcAddress(hReal, "PDUUnlockResource");
 }
@@ -154,11 +152,6 @@ __declspec(naked) void PDUModuleConnect(void) {
 // PDUModuleDisconnect (ord 24) — forwarder
 __declspec(naked) void PDUModuleDisconnect(void) {
     __asm { jmp dword ptr [g_real_PDUModuleDisconnect] }
-}
-
-// PDUSetComParam (ord 26) — forwarder
-__declspec(naked) void PDUSetComParam(void) {
-    __asm { jmp dword ptr [g_real_PDUSetComParam] }
 }
 
 // PDUSetUniqueRespIdTable (ord 27) — forwarder
