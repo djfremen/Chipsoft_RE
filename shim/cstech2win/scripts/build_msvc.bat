@@ -1,0 +1,31 @@
+@echo off
+REM Build the CSTech2Win shim DLL with MSVC.
+REM Targets 32-bit (x86) because the real CSTech2Win.dll is PE32 x86.
+REM Run from anywhere; this script chdir's to the shim repo root.
+
+setlocal
+pushd "%~dp0\.."
+
+call "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvarsall.bat" x86 >nul
+if errorlevel 1 goto fail
+
+if not exist build mkdir build
+
+cl /nologo /LD /O2 /MT /D_USRDLL /D_WINDLL /Fobuild\ ^
+   src\dllmain.c src\log.c src\wrappers.c src\forwarders.c ^
+   /link /DEF:src\cstech2win.def /OUT:build\CSTech2Win.dll ^
+         /IMPLIB:build\CSTech2Win.lib
+if errorlevel 1 goto fail
+
+echo.
+echo === build OK: build\CSTech2Win.dll ===
+dir /B build\CSTech2Win.dll
+popd
+endlocal
+exit /b 0
+
+:fail
+echo === build FAILED ===
+popd
+endlocal
+exit /b 1
