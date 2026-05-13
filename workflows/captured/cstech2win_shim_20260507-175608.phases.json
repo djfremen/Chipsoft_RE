@@ -1,0 +1,213 @@
+[
+  {
+    "step": "unknown",
+    "t_start": 32072,
+    "t_end": 32072,
+    "ecu_ids": [
+      "0x0100"
+    ],
+    "tx": 1,
+    "rx": 0,
+    "samples": [
+      {
+        "can_id": "0x0100",
+        "uds": "",
+        "decoded": "<empty>"
+      }
+    ]
+  },
+  {
+    "step": "+response",
+    "t_start": 32785,
+    "t_end": 32801,
+    "ecu_ids": [
+      "0x0101"
+    ],
+    "tx": 3,
+    "rx": 0,
+    "samples": [
+      {
+        "can_id": "0x0101",
+        "uds": "fe 01 3e",
+        "decoded": "unknown SID 0xFE"
+      },
+      {
+        "can_id": "0x0101",
+        "uds": "fe 01 3e",
+        "decoded": "unknown SID 0xFE"
+      }
+    ]
+  },
+  {
+    "step": "dynamic_did",
+    "t_start": 33472,
+    "t_end": 33472,
+    "ecu_ids": [
+      "0x0241"
+    ],
+    "tx": 1,
+    "rx": 2,
+    "samples": [
+      {
+        "can_id": "0x0241",
+        "uds": "aa 01 01",
+        "decoded": "DynamicallyDefineDID.sub=0x01 data=01"
+      }
+    ]
+  },
+  {
+    "step": "+response",
+    "t_start": 33849,
+    "t_end": 33949,
+    "ecu_ids": [
+      "0x0101"
+    ],
+    "tx": 2,
+    "rx": 22,
+    "samples": [
+      {
+        "can_id": "0x0101",
+        "uds": "fe 1a 9a",
+        "decoded": "unknown SID 0xFE"
+      },
+      {
+        "can_id": "0x0101",
+        "uds": "fe 1a 9a",
+        "decoded": "unknown SID 0xFE"
+      }
+    ]
+  },
+  {
+    "step": "ecu_presence_probe",
+    "t_start": 34928,
+    "t_end": 35228,
+    "ecu_ids": [
+      "0x0257",
+      "0x07E0"
+    ],
+    "tx": 2,
+    "rx": 2,
+    "samples": [
+      {
+        "can_id": "0x0257",
+        "uds": "1a 9a",
+        "decoded": "ReadDataByLocalId.ECU_present? data="
+      },
+      {
+        "can_id": "0x07E0",
+        "uds": "1a 9a",
+        "decoded": "ReadDataByLocalId.ECU_present? data="
+      }
+    ]
+  },
+  {
+    "step": "+response",
+    "t_start": 35680,
+    "t_end": 35786,
+    "ecu_ids": [
+      "0x0101"
+    ],
+    "tx": 2,
+    "rx": 1,
+    "samples": [
+      {
+        "can_id": "0x0101",
+        "uds": "fe 3e",
+        "decoded": "unknown SID 0xFE"
+      },
+      {
+        "can_id": "0x0101",
+        "uds": "fe 3e",
+        "decoded": "unknown SID 0xFE"
+      }
+    ]
+  },
+  {
+    "step": "+response",
+    "t_start": 42907,
+    "t_end": 42975,
+    "ecu_ids": [
+      "0x0101"
+    ],
+    "tx": 3,
+    "rx": 0,
+    "samples": [
+      {
+        "can_id": "0x0101",
+        "uds": "fe 01 3e",
+        "decoded": "unknown SID 0xFE"
+      },
+      {
+        "can_id": "0x0101",
+        "uds": "fe 01 3e",
+        "decoded": "unknown SID 0xFE"
+      }
+    ]
+  },
+  {
+    "step": "sid_0x20",
+    "t_start": 43055,
+    "t_end": 45341,
+    "ecu_ids": [
+      "0x0241",
+      "0x0242",
+      "0x0243",
+      "0x0244",
+      "0x0245",
+      "0x0249",
+      "0x024D",
+      "0x024E",
+      "0x024F",
+      "0x0257",
+      "0x025B",
+      "0x025E",
+      "0x025F",
+      "0x07E0"
+    ],
+    "tx": 15,
+    "rx": 10,
+    "samples": [
+      {
+        "can_id": "0x0241",
+        "uds": "20",
+        "decoded": "unknown SID 0x20"
+      },
+      {
+        "can_id": "0x0245",
+        "uds": "20",
+        "decoded": "unknown SID 0x20"
+      }
+    ]
+  },
+  {
+    "step": "dynamic_did",
+    "t_start": 46180,
+    "t_end": 59810,
+    "ecu_ids": [
+      "0x0241",
+      "0x0242",
+      "0x0243",
+      "0x0245",
+      "0x0249",
+      "0x024D",
+      "0x024F",
+      "0x0257",
+      "0x025B",
+      "0x07E0"
+    ],
+    "tx": 40,
+    "rx": 72,
+    "samples": [
+      {
+        "can_id": "0x0241",
+        "uds": "aa 01 01 12 13",
+        "decoded": "DynamicallyDefineDID.sub=0x01 data=01 12 13"
+      },
+      {
+        "can_id": "0x0245",
+        "uds": "aa 01 07",
+        "decoded": "DynamicallyDefineDID.sub=0x01 data=07"
+      }
+    ]
+  }
+]

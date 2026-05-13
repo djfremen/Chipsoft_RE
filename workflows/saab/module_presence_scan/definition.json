@@ -1,0 +1,20 @@
+{
+  "name": "saab/module_presence_scan",
+  "vehicle": "SAAB GMLAN bus",
+  "purpose": "Discover which ECMs are present on the HS-CAN bus by broadcasting ReadDataByLocalId $1A 9A on the functional address $0101 (GMW3110 functional broadcast).",
+  "captured_from": ["Chipsoft_RE/shim/cstech2win/captures/raw/cstech2win_shim_20260507-015619.log"],
+  "steps": [
+    {
+      "step": "broadcast_presence_probe",
+      "tx": {"functional_id": "0x0101", "uds": "1A 9A"},
+      "collect_until_silent": {"window_ms": 500},
+      "store_responders_in": "session_var.present_ecus",
+      "observed_responders": [
+        "0x0641 (engine)", "0x0642", "0x0643", "0x0644", "0x0645",
+        "0x0646", "0x0647", "0x0648", "0x0649", "0x064A", "0x064B",
+        "0x064D", "0x064F", "0x0651", "0x0657", "0x065B", "0x065C",
+        "0x07E8 (OBD-II engine)", "0x07E9 (OBD-II trans)"
+      ]
+    }
+  ]
+}

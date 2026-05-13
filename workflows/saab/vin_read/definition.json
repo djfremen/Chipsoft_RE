@@ -1,0 +1,24 @@
+{
+  "name": "saab/vin_read",
+  "vehicle": "SAAB 9-3 / 9-5",
+  "purpose": "Read the 17-character VIN from any responding ECM, for car identification.",
+  "captured_from": ["Chipsoft_RE/shim/cstech2win/captures/raw/cstech2win_shim_20260507-015619.log"],
+  "addressing_options": [
+    {"name": "OBD-II broadcast", "request_can_id": "0x07E0", "reply_can_id": "0x07E8"},
+    {"name": "SAAB engine physical", "request_can_id": "0x0241", "reply_can_id": "0x0641"}
+  ],
+  "steps": [
+    {
+      "step": "request_vin",
+      "tx": {"can_id": "${request_can_id}", "uds": "1A 90"},
+      "expect": {"sid": "0x5A", "sub": "0x90", "data_len": 17},
+      "iso_tp": "multi_frame_FF_then_CF",
+      "timeout_ms": 1500,
+      "store_vin_in": "session_var.vin"
+    }
+  ],
+  "notes": [
+    "Reply is ISO-TP multi-frame: First Frame (PCI 0x10 0x12) + Consecutive Frames (PCI 0x21, 0x22).",
+    "Some SAAB platforms reply on both 0x0641 and 0x07E8; pick whichever responds first."
+  ]
+}

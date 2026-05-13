@@ -1,0 +1,537 @@
+[
+  {
+    "step": "unknown",
+    "t_start": 29400,
+    "t_end": 29400,
+    "ecu_ids": [
+      "0x0100"
+    ],
+    "tx": 1,
+    "rx": 0,
+    "samples": [
+      {
+        "can_id": "0x0100",
+        "uds": "",
+        "decoded": "<empty>"
+      }
+    ]
+  },
+  {
+    "step": "+response",
+    "t_start": 30009,
+    "t_end": 30105,
+    "ecu_ids": [
+      "0x0101"
+    ],
+    "tx": 3,
+    "rx": 0,
+    "samples": [
+      {
+        "can_id": "0x0101",
+        "uds": "fe 01 3e",
+        "decoded": "unknown SID 0xFE"
+      },
+      {
+        "can_id": "0x0101",
+        "uds": "fe 01 3e",
+        "decoded": "unknown SID 0xFE"
+      }
+    ]
+  },
+  {
+    "step": "dynamic_did",
+    "t_start": 30746,
+    "t_end": 30746,
+    "ecu_ids": [
+      "0x0241"
+    ],
+    "tx": 1,
+    "rx": 1,
+    "samples": [
+      {
+        "can_id": "0x0241",
+        "uds": "aa 01 01",
+        "decoded": "DynamicallyDefineDID.sub=0x01 data=01"
+      }
+    ]
+  },
+  {
+    "step": "+response",
+    "t_start": 31085,
+    "t_end": 31182,
+    "ecu_ids": [
+      "0x0101"
+    ],
+    "tx": 2,
+    "rx": 22,
+    "samples": [
+      {
+        "can_id": "0x0101",
+        "uds": "fe 1a 9a",
+        "decoded": "unknown SID 0xFE"
+      },
+      {
+        "can_id": "0x0101",
+        "uds": "fe 1a 9a",
+        "decoded": "unknown SID 0xFE"
+      }
+    ]
+  },
+  {
+    "step": "read_vin",
+    "t_start": 32161,
+    "t_end": 32801,
+    "ecu_ids": [
+      "0x0241",
+      "0x0242",
+      "0x0245"
+    ],
+    "tx": 3,
+    "rx": 3,
+    "samples": [
+      {
+        "can_id": "0x0245",
+        "uds": "1a 90",
+        "decoded": "ReadDataByLocalId.VIN data="
+      },
+      {
+        "can_id": "0x0242",
+        "uds": "1a 90",
+        "decoded": "ReadDataByLocalId.VIN data="
+      }
+    ]
+  },
+  {
+    "step": "+response",
+    "t_start": 33242,
+    "t_end": 33344,
+    "ecu_ids": [
+      "0x0101"
+    ],
+    "tx": 2,
+    "rx": 0,
+    "samples": [
+      {
+        "can_id": "0x0101",
+        "uds": "fe 3e",
+        "decoded": "unknown SID 0xFE"
+      },
+      {
+        "can_id": "0x0101",
+        "uds": "fe 3e",
+        "decoded": "unknown SID 0xFE"
+      }
+    ]
+  },
+  {
+    "step": "read_vin",
+    "t_start": 33462,
+    "t_end": 35404,
+    "ecu_ids": [
+      "0x0243",
+      "0x0246",
+      "0x0248",
+      "0x0249",
+      "0x024A",
+      "0x024B",
+      "0x024F"
+    ],
+    "tx": 7,
+    "rx": 7,
+    "samples": [
+      {
+        "can_id": "0x0243",
+        "uds": "1a 90",
+        "decoded": "ReadDataByLocalId.VIN data="
+      },
+      {
+        "can_id": "0x0246",
+        "uds": "1a 90",
+        "decoded": "ReadDataByLocalId.VIN data="
+      }
+    ]
+  },
+  {
+    "step": "+response",
+    "t_start": 35649,
+    "t_end": 35942,
+    "ecu_ids": [
+      "0x0101"
+    ],
+    "tx": 4,
+    "rx": 22,
+    "samples": [
+      {
+        "can_id": "0x0101",
+        "uds": "fe 3e",
+        "decoded": "unknown SID 0xFE"
+      },
+      {
+        "can_id": "0x0101",
+        "uds": "fe 3e",
+        "decoded": "unknown SID 0xFE"
+      }
+    ]
+  },
+  {
+    "step": "sec_access.req_seed_l01",
+    "t_start": 36894,
+    "t_end": 36894,
+    "ecu_ids": [
+      "0x0257"
+    ],
+    "tx": 1,
+    "rx": 1,
+    "samples": [
+      {
+        "can_id": "0x0257",
+        "uds": "27 01",
+        "decoded": "SecurityAccess.reqSeed_lvl1 data="
+      }
+    ]
+  },
+  {
+    "step": "+response",
+    "t_start": 38144,
+    "t_end": 38247,
+    "ecu_ids": [
+      "0x0101"
+    ],
+    "tx": 2,
+    "rx": 0,
+    "samples": [
+      {
+        "can_id": "0x0101",
+        "uds": "fe 3e",
+        "decoded": "unknown SID 0xFE"
+      },
+      {
+        "can_id": "0x0101",
+        "uds": "fe 3e",
+        "decoded": "unknown SID 0xFE"
+      }
+    ]
+  },
+  {
+    "step": "+response",
+    "t_start": 40654,
+    "t_end": 40756,
+    "ecu_ids": [
+      "0x0101"
+    ],
+    "tx": 2,
+    "rx": 0,
+    "samples": [
+      {
+        "can_id": "0x0101",
+        "uds": "fe 3e",
+        "decoded": "unknown SID 0xFE"
+      },
+      {
+        "can_id": "0x0101",
+        "uds": "fe 3e",
+        "decoded": "unknown SID 0xFE"
+      }
+    ]
+  },
+  {
+    "step": "+response",
+    "t_start": 43162,
+    "t_end": 43260,
+    "ecu_ids": [
+      "0x0101"
+    ],
+    "tx": 2,
+    "rx": 0,
+    "samples": [
+      {
+        "can_id": "0x0101",
+        "uds": "fe 3e",
+        "decoded": "unknown SID 0xFE"
+      },
+      {
+        "can_id": "0x0101",
+        "uds": "fe 3e",
+        "decoded": "unknown SID 0xFE"
+      }
+    ]
+  },
+  {
+    "step": "+response",
+    "t_start": 45661,
+    "t_end": 45761,
+    "ecu_ids": [
+      "0x0101"
+    ],
+    "tx": 2,
+    "rx": 0,
+    "samples": [
+      {
+        "can_id": "0x0101",
+        "uds": "fe 3e",
+        "decoded": "unknown SID 0xFE"
+      },
+      {
+        "can_id": "0x0101",
+        "uds": "fe 3e",
+        "decoded": "unknown SID 0xFE"
+      }
+    ]
+  },
+  {
+    "step": "sec_access.req_seed_l01",
+    "t_start": 47537,
+    "t_end": 47839,
+    "ecu_ids": [
+      "0x0242",
+      "0x0257"
+    ],
+    "tx": 2,
+    "rx": 2,
+    "samples": [
+      {
+        "can_id": "0x0257",
+        "uds": "27 01",
+        "decoded": "SecurityAccess.reqSeed_lvl1 data="
+      },
+      {
+        "can_id": "0x0242",
+        "uds": "27 01",
+        "decoded": "SecurityAccess.reqSeed_lvl1 data="
+      }
+    ]
+  },
+  {
+    "step": "+response",
+    "t_start": 48146,
+    "t_end": 48244,
+    "ecu_ids": [
+      "0x0101"
+    ],
+    "tx": 2,
+    "rx": 0,
+    "samples": [
+      {
+        "can_id": "0x0101",
+        "uds": "fe 3e",
+        "decoded": "unknown SID 0xFE"
+      },
+      {
+        "can_id": "0x0101",
+        "uds": "fe 3e",
+        "decoded": "unknown SID 0xFE"
+      }
+    ]
+  },
+  {
+    "step": "sec_access.req_seed_l01",
+    "t_start": 48344,
+    "t_end": 50152,
+    "ecu_ids": [
+      "0x0241",
+      "0x0243",
+      "0x0246",
+      "0x0248",
+      "0x024A",
+      "0x024B",
+      "0x07E1"
+    ],
+    "tx": 7,
+    "rx": 7,
+    "samples": [
+      {
+        "can_id": "0x0241",
+        "uds": "27 01",
+        "decoded": "SecurityAccess.reqSeed_lvl1 data="
+      },
+      {
+        "can_id": "0x0243",
+        "uds": "27 01",
+        "decoded": "SecurityAccess.reqSeed_lvl1 data="
+      }
+    ]
+  },
+  {
+    "step": "+response",
+    "t_start": 50451,
+    "t_end": 50547,
+    "ecu_ids": [
+      "0x0101"
+    ],
+    "tx": 2,
+    "rx": 0,
+    "samples": [
+      {
+        "can_id": "0x0101",
+        "uds": "fe 3e",
+        "decoded": "unknown SID 0xFE"
+      },
+      {
+        "can_id": "0x0101",
+        "uds": "fe 3e",
+        "decoded": "unknown SID 0xFE"
+      }
+    ]
+  },
+  {
+    "step": "dynamic_did",
+    "t_start": 50651,
+    "t_end": 52252,
+    "ecu_ids": [
+      "0x0241"
+    ],
+    "tx": 5,
+    "rx": 8,
+    "samples": [
+      {
+        "can_id": "0x0241",
+        "uds": "aa 01 01",
+        "decoded": "DynamicallyDefineDID.sub=0x01 data=01"
+      },
+      {
+        "can_id": "0x0241",
+        "uds": "aa 01 01",
+        "decoded": "DynamicallyDefineDID.sub=0x01 data=01"
+      }
+    ]
+  },
+  {
+    "step": "response_on_event",
+    "t_start": 52637,
+    "t_end": 52637,
+    "ecu_ids": [
+      "0x0241"
+    ],
+    "tx": 1,
+    "rx": 1,
+    "samples": [
+      {
+        "can_id": "0x0241",
+        "uds": "ae 00",
+        "decoded": "ResponseOnEvent.sub=0x00 data="
+      }
+    ]
+  },
+  {
+    "step": "+response",
+    "t_start": 52954,
+    "t_end": 53055,
+    "ecu_ids": [
+      "0x0101"
+    ],
+    "tx": 2,
+    "rx": 0,
+    "samples": [
+      {
+        "can_id": "0x0101",
+        "uds": "fe 3e",
+        "decoded": "unknown SID 0xFE"
+      },
+      {
+        "can_id": "0x0101",
+        "uds": "fe 3e",
+        "decoded": "unknown SID 0xFE"
+      }
+    ]
+  },
+  {
+    "step": "read_vin_alt",
+    "t_start": 53172,
+    "t_end": 53172,
+    "ecu_ids": [
+      "0x0241"
+    ],
+    "tx": 1,
+    "rx": 2,
+    "samples": [
+      {
+        "can_id": "0x0241",
+        "uds": "1a 3f",
+        "decoded": "ReadDataByLocalId.VIN(alt) data="
+      }
+    ]
+  },
+  {
+    "step": "sec_access.req_seed_SAS",
+    "t_start": 53855,
+    "t_end": 53855,
+    "ecu_ids": [
+      "0x0241"
+    ],
+    "tx": 1,
+    "rx": 2,
+    "samples": [
+      {
+        "can_id": "0x0241",
+        "uds": "27 0b",
+        "decoded": "SecurityAccess.reqSeed_SAS data="
+      }
+    ]
+  },
+  {
+    "step": "+response",
+    "t_start": 55485,
+    "t_end": 55603,
+    "ecu_ids": [
+      "0x0101"
+    ],
+    "tx": 2,
+    "rx": 0,
+    "samples": [
+      {
+        "can_id": "0x0101",
+        "uds": "fe 3e",
+        "decoded": "unknown SID 0xFE"
+      },
+      {
+        "can_id": "0x0101",
+        "uds": "fe 3e",
+        "decoded": "unknown SID 0xFE"
+      }
+    ]
+  },
+  {
+    "step": "dynamic_did",
+    "t_start": 55866,
+    "t_end": 57045,
+    "ecu_ids": [
+      "0x0241"
+    ],
+    "tx": 4,
+    "rx": 5,
+    "samples": [
+      {
+        "can_id": "0x0241",
+        "uds": "aa 01 01",
+        "decoded": "DynamicallyDefineDID.sub=0x01 data=01"
+      },
+      {
+        "can_id": "0x0241",
+        "uds": "aa 01 01",
+        "decoded": "DynamicallyDefineDID.sub=0x01 data=01"
+      }
+    ]
+  },
+  {
+    "step": "+response",
+    "t_start": 57537,
+    "t_end": 57637,
+    "ecu_ids": [
+      "0x0101"
+    ],
+    "tx": 2,
+    "rx": 0,
+    "samples": [
+      {
+        "can_id": "0x0101",
+        "uds": "fe 3e",
+        "decoded": "unknown SID 0xFE"
+      },
+      {
+        "can_id": "0x0101",
+        "uds": "fe 3e",
+        "decoded": "unknown SID 0xFE"
+      }
+    ]
+  }
+]

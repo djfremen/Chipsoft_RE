@@ -1,0 +1,1042 @@
+[
+  {
+    "t_ms": 26511,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x0100",
+    "uds_hex": "",
+    "uds_decoded": "<empty>"
+  },
+  {
+    "t_ms": 27120,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x0101",
+    "uds_hex": "fe 01 3e",
+    "uds_decoded": "unknown SID 0xFE"
+  },
+  {
+    "t_ms": 27196,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x0101",
+    "uds_hex": "fe 01 3e",
+    "uds_decoded": "unknown SID 0xFE"
+  },
+  {
+    "t_ms": 27203,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x0101",
+    "uds_hex": "fe 01 3e",
+    "uds_decoded": "unknown SID 0xFE"
+  },
+  {
+    "t_ms": 27822,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x0241",
+    "uds_hex": "aa 01 01",
+    "uds_decoded": "DynamicallyDefineDID.sub=0x01 data=01"
+  },
+  {
+    "t_ms": 27968,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0641",
+    "uds_hex": "7f aa 78",
+    "uds_decoded": "NRC DynamicallyDefineDID responsePending"
+  },
+  {
+    "t_ms": 27986,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0541",
+    "uds_hex": "01 77 06 02 02 fd 04 fc",
+    "uds_decoded": "unknown SID 0x01"
+  },
+  {
+    "t_ms": 28078,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x0101",
+    "uds_hex": "fe 1a 9a",
+    "uds_decoded": "unknown SID 0xFE"
+  },
+  {
+    "t_ms": 28151,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x07E9",
+    "uds_hex": "5a 9a 01 01",
+    "uds_decoded": "+ReadDataByLocalId.ECU_present? data=01 01"
+  },
+  {
+    "t_ms": 28153,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x0101",
+    "uds_hex": "fe 1a 9a",
+    "uds_decoded": "unknown SID 0xFE"
+  },
+  {
+    "t_ms": 28235,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0643",
+    "uds_hex": "5a 9a 03 01",
+    "uds_decoded": "+ReadDataByLocalId.ECU_present? data=03 01"
+  },
+  {
+    "t_ms": 28238,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0647",
+    "uds_hex": "5a 9a 02 0a",
+    "uds_decoded": "+ReadDataByLocalId.ECU_present? data=02 0a"
+  },
+  {
+    "t_ms": 28240,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x07E8",
+    "uds_hex": "5a 9a 01 06",
+    "uds_decoded": "+ReadDataByLocalId.ECU_present? data=01 06"
+  },
+  {
+    "t_ms": 28243,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0651",
+    "uds_hex": "5a 9a 03 02",
+    "uds_decoded": "+ReadDataByLocalId.ECU_present? data=03 02"
+  },
+  {
+    "t_ms": 28245,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0645",
+    "uds_hex": "5a 9a 03 04",
+    "uds_decoded": "+ReadDataByLocalId.ECU_present? data=03 04"
+  },
+  {
+    "t_ms": 28249,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x065B",
+    "uds_hex": "5a 9a 03 03",
+    "uds_decoded": "+ReadDataByLocalId.ECU_present? data=03 03"
+  },
+  {
+    "t_ms": 28252,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0645",
+    "uds_hex": "5a 9a 01 0a",
+    "uds_decoded": "+ReadDataByLocalId.ECU_present? data=01 0a"
+  },
+  {
+    "t_ms": 28254,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0642",
+    "uds_hex": "5a 9a 01 09",
+    "uds_decoded": "+ReadDataByLocalId.ECU_present? data=01 09"
+  },
+  {
+    "t_ms": 28256,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0643",
+    "uds_hex": "5a 9a 01 07",
+    "uds_decoded": "+ReadDataByLocalId.ECU_present? data=01 07"
+  },
+  {
+    "t_ms": 28258,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0644",
+    "uds_hex": "5a 9a 01 04",
+    "uds_decoded": "+ReadDataByLocalId.ECU_present? data=01 04"
+  },
+  {
+    "t_ms": 28261,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0647",
+    "uds_hex": "5a 9a 02 0a",
+    "uds_decoded": "+ReadDataByLocalId.ECU_present? data=02 0a"
+  },
+  {
+    "t_ms": 28265,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0646",
+    "uds_hex": "5a 9a 01 02",
+    "uds_decoded": "+ReadDataByLocalId.ECU_present? data=01 02"
+  },
+  {
+    "t_ms": 28269,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0648",
+    "uds_hex": "5a 9a 01 07",
+    "uds_decoded": "+ReadDataByLocalId.ECU_present? data=01 07"
+  },
+  {
+    "t_ms": 28271,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0649",
+    "uds_hex": "5a 9a 01 05",
+    "uds_decoded": "+ReadDataByLocalId.ECU_present? data=01 05"
+  },
+  {
+    "t_ms": 28276,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x064A",
+    "uds_hex": "5a 9a 01 0a",
+    "uds_decoded": "+ReadDataByLocalId.ECU_present? data=01 0a"
+  },
+  {
+    "t_ms": 28281,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x064B",
+    "uds_hex": "5a 9a 01 07",
+    "uds_decoded": "+ReadDataByLocalId.ECU_present? data=01 07"
+  },
+  {
+    "t_ms": 28285,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x064D",
+    "uds_hex": "5a 9a 01 04",
+    "uds_decoded": "+ReadDataByLocalId.ECU_present? data=01 04"
+  },
+  {
+    "t_ms": 28289,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x064F",
+    "uds_hex": "5a 9a 01 02",
+    "uds_decoded": "+ReadDataByLocalId.ECU_present? data=01 02"
+  },
+  {
+    "t_ms": 28293,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0657",
+    "uds_hex": "5a 9a 01 05",
+    "uds_decoded": "+ReadDataByLocalId.ECU_present? data=01 05"
+  },
+  {
+    "t_ms": 28297,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x065C",
+    "uds_hex": "5a 9a 01 01",
+    "uds_decoded": "+ReadDataByLocalId.ECU_present? data=01 01"
+  },
+  {
+    "t_ms": 28318,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0641",
+    "uds_hex": "5a 9a 03 04",
+    "uds_decoded": "+ReadDataByLocalId.ECU_present? data=03 04"
+  },
+  {
+    "t_ms": 29099,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x0245",
+    "uds_hex": "1a 90",
+    "uds_decoded": "ReadDataByLocalId.VIN data="
+  },
+  {
+    "t_ms": 29204,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0645",
+    "uds_hex": "5a 90 59 53 33 46 44 34 39 59 58 34 31 30 31 32 30 31 37",
+    "uds_decoded": "+ReadDataByLocalId.VIN data=59 53 33 46 44 34 39 59 58 34 31 30 31 32 30 31 37"
+  },
+  {
+    "t_ms": 29391,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x0242",
+    "uds_hex": "1a 90",
+    "uds_decoded": "ReadDataByLocalId.VIN data="
+  },
+  {
+    "t_ms": 29530,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0642",
+    "uds_hex": "5a 90 59 53 33 46 44 34 39 59 58 34 31 30 31 32 30 31 37",
+    "uds_decoded": "+ReadDataByLocalId.VIN data=59 53 33 46 44 34 39 59 58 34 31 30 31 32 30 31 37"
+  },
+  {
+    "t_ms": 29716,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x0241",
+    "uds_hex": "1a 90",
+    "uds_decoded": "ReadDataByLocalId.VIN data="
+  },
+  {
+    "t_ms": 29869,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0641",
+    "uds_hex": "5a 90 59 53 33 46 44 34 39 59 58 34 31 30 31 32 30 31 37",
+    "uds_decoded": "+ReadDataByLocalId.VIN data=59 53 33 46 44 34 39 59 58 34 31 30 31 32 30 31 37"
+  },
+  {
+    "t_ms": 30060,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x0101",
+    "uds_hex": "fe 3e",
+    "uds_decoded": "unknown SID 0xFE"
+  },
+  {
+    "t_ms": 30142,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x0101",
+    "uds_hex": "fe 3e",
+    "uds_decoded": "unknown SID 0xFE"
+  },
+  {
+    "t_ms": 30294,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x0243",
+    "uds_hex": "1a 90",
+    "uds_decoded": "ReadDataByLocalId.VIN data="
+  },
+  {
+    "t_ms": 30471,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0643",
+    "uds_hex": "5a 90 59 53 33 46 44 34 39 59 58 34 31 30 31 32 30 31 37",
+    "uds_decoded": "+ReadDataByLocalId.VIN data=59 53 33 46 44 34 39 59 58 34 31 30 31 32 30 31 37"
+  },
+  {
+    "t_ms": 30672,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x0246",
+    "uds_hex": "1a 90",
+    "uds_decoded": "ReadDataByLocalId.VIN data="
+  },
+  {
+    "t_ms": 30829,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0646",
+    "uds_hex": "5a 90 59 53 33 46 44 34 39 59 58 34 31 30 31 32 30 31 37",
+    "uds_decoded": "+ReadDataByLocalId.VIN data=59 53 33 46 44 34 39 59 58 34 31 30 31 32 30 31 37"
+  },
+  {
+    "t_ms": 31022,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x0248",
+    "uds_hex": "1a 90",
+    "uds_decoded": "ReadDataByLocalId.VIN data="
+  },
+  {
+    "t_ms": 31128,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0648",
+    "uds_hex": "5a 90 59 53 33 46 44 34 39 59 58 34 31 30 31 32 30 31 37",
+    "uds_decoded": "+ReadDataByLocalId.VIN data=59 53 33 46 44 34 39 59 58 34 31 30 31 32 30 31 37"
+  },
+  {
+    "t_ms": 31327,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x0249",
+    "uds_hex": "1a 90",
+    "uds_decoded": "ReadDataByLocalId.VIN data="
+  },
+  {
+    "t_ms": 31429,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0649",
+    "uds_hex": "5a 90 59 53 33 46 44 34 39 59 58 34 31 30 31 32 30 31 37",
+    "uds_decoded": "+ReadDataByLocalId.VIN data=59 53 33 46 44 34 39 59 58 34 31 30 31 32 30 31 37"
+  },
+  {
+    "t_ms": 31612,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x024A",
+    "uds_hex": "1a 90",
+    "uds_decoded": "ReadDataByLocalId.VIN data="
+  },
+  {
+    "t_ms": 31719,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x064A",
+    "uds_hex": "5a 90 59 53 33 46 44 34 39 59 58 34 31 30 31 32 30 31 37",
+    "uds_decoded": "+ReadDataByLocalId.VIN data=59 53 33 46 44 34 39 59 58 34 31 30 31 32 30 31 37"
+  },
+  {
+    "t_ms": 31933,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x024B",
+    "uds_hex": "1a 90",
+    "uds_decoded": "ReadDataByLocalId.VIN data="
+  },
+  {
+    "t_ms": 32048,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x064B",
+    "uds_hex": "5a 90 59 53 33 46 44 34 39 59 58 34 31 30 31 32 30 31 37",
+    "uds_decoded": "+ReadDataByLocalId.VIN data=59 53 33 46 44 34 39 59 58 34 31 30 31 32 30 31 37"
+  },
+  {
+    "t_ms": 32260,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x024F",
+    "uds_hex": "1a 90",
+    "uds_decoded": "ReadDataByLocalId.VIN data="
+  },
+  {
+    "t_ms": 32366,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x064F",
+    "uds_hex": "5a 90 59 53 33 46 44 34 39 59 58 34 31 30 31 32 30 31 37",
+    "uds_decoded": "+ReadDataByLocalId.VIN data=59 53 33 46 44 34 39 59 58 34 31 30 31 32 30 31 37"
+  },
+  {
+    "t_ms": 32478,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x0101",
+    "uds_hex": "fe 3e",
+    "uds_decoded": "unknown SID 0xFE"
+  },
+  {
+    "t_ms": 32559,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x0101",
+    "uds_hex": "fe 3e",
+    "uds_decoded": "unknown SID 0xFE"
+  },
+  {
+    "t_ms": 32647,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x0101",
+    "uds_hex": "fe 1a 9a",
+    "uds_decoded": "unknown SID 0xFE"
+  },
+  {
+    "t_ms": 32722,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x07E9",
+    "uds_hex": "5a 9a 01 01",
+    "uds_decoded": "+ReadDataByLocalId.ECU_present? data=01 01"
+  },
+  {
+    "t_ms": 32724,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x0101",
+    "uds_hex": "fe 1a 9a",
+    "uds_decoded": "unknown SID 0xFE"
+  },
+  {
+    "t_ms": 32809,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0643",
+    "uds_hex": "5a 9a 03 01",
+    "uds_decoded": "+ReadDataByLocalId.ECU_present? data=03 01"
+  },
+  {
+    "t_ms": 32812,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x07E8",
+    "uds_hex": "5a 9a 01 06",
+    "uds_decoded": "+ReadDataByLocalId.ECU_present? data=01 06"
+  },
+  {
+    "t_ms": 32815,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0647",
+    "uds_hex": "5a 9a 02 0a",
+    "uds_decoded": "+ReadDataByLocalId.ECU_present? data=02 0a"
+  },
+  {
+    "t_ms": 32819,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0651",
+    "uds_hex": "5a 9a 03 02",
+    "uds_decoded": "+ReadDataByLocalId.ECU_present? data=03 02"
+  },
+  {
+    "t_ms": 32821,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0645",
+    "uds_hex": "5a 9a 03 04",
+    "uds_decoded": "+ReadDataByLocalId.ECU_present? data=03 04"
+  },
+  {
+    "t_ms": 32824,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0645",
+    "uds_hex": "5a 9a 01 0a",
+    "uds_decoded": "+ReadDataByLocalId.ECU_present? data=01 0a"
+  },
+  {
+    "t_ms": 32826,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0648",
+    "uds_hex": "5a 9a 01 07",
+    "uds_decoded": "+ReadDataByLocalId.ECU_present? data=01 07"
+  },
+  {
+    "t_ms": 32828,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0643",
+    "uds_hex": "5a 9a 01 07",
+    "uds_decoded": "+ReadDataByLocalId.ECU_present? data=01 07"
+  },
+  {
+    "t_ms": 32830,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0644",
+    "uds_hex": "5a 9a 01 04",
+    "uds_decoded": "+ReadDataByLocalId.ECU_present? data=01 04"
+  },
+  {
+    "t_ms": 32832,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0642",
+    "uds_hex": "5a 9a 01 09",
+    "uds_decoded": "+ReadDataByLocalId.ECU_present? data=01 09"
+  },
+  {
+    "t_ms": 32835,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0646",
+    "uds_hex": "5a 9a 01 02",
+    "uds_decoded": "+ReadDataByLocalId.ECU_present? data=01 02"
+  },
+  {
+    "t_ms": 32838,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0647",
+    "uds_hex": "5a 9a 02 0a",
+    "uds_decoded": "+ReadDataByLocalId.ECU_present? data=02 0a"
+  },
+  {
+    "t_ms": 32853,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0649",
+    "uds_hex": "5a 9a 01 05",
+    "uds_decoded": "+ReadDataByLocalId.ECU_present? data=01 05"
+  },
+  {
+    "t_ms": 32855,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x064A",
+    "uds_hex": "5a 9a 01 0a",
+    "uds_decoded": "+ReadDataByLocalId.ECU_present? data=01 0a"
+  },
+  {
+    "t_ms": 32859,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x064B",
+    "uds_hex": "5a 9a 01 07",
+    "uds_decoded": "+ReadDataByLocalId.ECU_present? data=01 07"
+  },
+  {
+    "t_ms": 32865,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x064D",
+    "uds_hex": "5a 9a 01 04",
+    "uds_decoded": "+ReadDataByLocalId.ECU_present? data=01 04"
+  },
+  {
+    "t_ms": 32869,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x064F",
+    "uds_hex": "5a 9a 01 02",
+    "uds_decoded": "+ReadDataByLocalId.ECU_present? data=01 02"
+  },
+  {
+    "t_ms": 32873,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0657",
+    "uds_hex": "5a 9a 01 05",
+    "uds_decoded": "+ReadDataByLocalId.ECU_present? data=01 05"
+  },
+  {
+    "t_ms": 32884,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0641",
+    "uds_hex": "5a 9a 03 04",
+    "uds_decoded": "+ReadDataByLocalId.ECU_present? data=03 04"
+  },
+  {
+    "t_ms": 32886,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x065B",
+    "uds_hex": "5a 9a 03 03",
+    "uds_decoded": "+ReadDataByLocalId.ECU_present? data=03 03"
+  },
+  {
+    "t_ms": 32888,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x065C",
+    "uds_hex": "5a 9a 01 01",
+    "uds_decoded": "+ReadDataByLocalId.ECU_present? data=01 01"
+  },
+  {
+    "t_ms": 33627,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x0257",
+    "uds_hex": "27 01",
+    "uds_decoded": "SecurityAccess.reqSeed_lvl1 data="
+  },
+  {
+    "t_ms": 33781,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0657",
+    "uds_hex": "67 01 3b 86",
+    "uds_decoded": "+SecurityAccess.reqSeed_lvl1 data=3b 86"
+  },
+  {
+    "t_ms": 33975,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x0242",
+    "uds_hex": "27 01",
+    "uds_decoded": "SecurityAccess.reqSeed_lvl1 data="
+  },
+  {
+    "t_ms": 34067,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0642",
+    "uds_hex": "67 01 a7 8c",
+    "uds_decoded": "+SecurityAccess.reqSeed_lvl1 data=a7 8c"
+  },
+  {
+    "t_ms": 34262,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x0241",
+    "uds_hex": "27 01",
+    "uds_decoded": "SecurityAccess.reqSeed_lvl1 data="
+  },
+  {
+    "t_ms": 34405,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0641",
+    "uds_hex": "67 01 f6 31",
+    "uds_decoded": "+SecurityAccess.reqSeed_lvl1 data=f6 31"
+  },
+  {
+    "t_ms": 34590,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x0243",
+    "uds_hex": "27 01",
+    "uds_decoded": "SecurityAccess.reqSeed_lvl1 data="
+  },
+  {
+    "t_ms": 34673,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0643",
+    "uds_hex": "67 01 a0 e9",
+    "uds_decoded": "+SecurityAccess.reqSeed_lvl1 data=a0 e9"
+  },
+  {
+    "t_ms": 34863,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x0101",
+    "uds_hex": "fe 3e",
+    "uds_decoded": "unknown SID 0xFE"
+  },
+  {
+    "t_ms": 34949,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x0101",
+    "uds_hex": "fe 3e",
+    "uds_decoded": "unknown SID 0xFE"
+  },
+  {
+    "t_ms": 35102,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x0246",
+    "uds_hex": "27 01",
+    "uds_decoded": "SecurityAccess.reqSeed_lvl1 data="
+  },
+  {
+    "t_ms": 35319,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0646",
+    "uds_hex": "67 01 04 63",
+    "uds_decoded": "+SecurityAccess.reqSeed_lvl1 data=04 63"
+  },
+  {
+    "t_ms": 35518,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x0248",
+    "uds_hex": "27 01",
+    "uds_decoded": "SecurityAccess.reqSeed_lvl1 data="
+  },
+  {
+    "t_ms": 35604,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0648",
+    "uds_hex": "67 01 c8 6e",
+    "uds_decoded": "+SecurityAccess.reqSeed_lvl1 data=c8 6e"
+  },
+  {
+    "t_ms": 35788,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x024A",
+    "uds_hex": "27 01",
+    "uds_decoded": "SecurityAccess.reqSeed_lvl1 data="
+  },
+  {
+    "t_ms": 35880,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x064A",
+    "uds_hex": "67 01 8d 07",
+    "uds_decoded": "+SecurityAccess.reqSeed_lvl1 data=8d 07"
+  },
+  {
+    "t_ms": 36075,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x024B",
+    "uds_hex": "27 01",
+    "uds_decoded": "SecurityAccess.reqSeed_lvl1 data="
+  },
+  {
+    "t_ms": 36163,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x064B",
+    "uds_hex": "67 01 80 54",
+    "uds_decoded": "+SecurityAccess.reqSeed_lvl1 data=80 54"
+  },
+  {
+    "t_ms": 36362,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x07E1",
+    "uds_hex": "27 01",
+    "uds_decoded": "SecurityAccess.reqSeed_lvl1 data="
+  },
+  {
+    "t_ms": 36437,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x07E9",
+    "uds_hex": "67 01 d2 dc",
+    "uds_decoded": "+SecurityAccess.reqSeed_lvl1 data=d2 dc"
+  },
+  {
+    "t_ms": 36644,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x0241",
+    "uds_hex": "aa 01 01",
+    "uds_decoded": "DynamicallyDefineDID.sub=0x01 data=01"
+  },
+  {
+    "t_ms": 36810,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0541",
+    "uds_hex": "01 77 06 02 02 fd 04 fc",
+    "uds_decoded": "unknown SID 0x01"
+  },
+  {
+    "t_ms": 37068,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x0241",
+    "uds_hex": "aa 01 01",
+    "uds_decoded": "DynamicallyDefineDID.sub=0x01 data=01"
+  },
+  {
+    "t_ms": 37215,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0641",
+    "uds_hex": "7f aa 78",
+    "uds_decoded": "NRC DynamicallyDefineDID responsePending"
+  },
+  {
+    "t_ms": 37239,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0541",
+    "uds_hex": "01 77 06 02 02 fd 04 fc",
+    "uds_decoded": "unknown SID 0x01"
+  },
+  {
+    "t_ms": 37380,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x0101",
+    "uds_hex": "fe 3e",
+    "uds_decoded": "unknown SID 0xFE"
+  },
+  {
+    "t_ms": 37461,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x0101",
+    "uds_hex": "fe 3e",
+    "uds_decoded": "unknown SID 0xFE"
+  },
+  {
+    "t_ms": 37602,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x0241",
+    "uds_hex": "aa 01 01",
+    "uds_decoded": "DynamicallyDefineDID.sub=0x01 data=01"
+  },
+  {
+    "t_ms": 37771,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0541",
+    "uds_hex": "01 77 03 01 01 fd 04 fc",
+    "uds_decoded": "unknown SID 0x01"
+  },
+  {
+    "t_ms": 37965,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x0241",
+    "uds_hex": "aa 01 01",
+    "uds_decoded": "DynamicallyDefineDID.sub=0x01 data=01"
+  },
+  {
+    "t_ms": 38134,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0541",
+    "uds_hex": "01 78 01 01 00 fd 43 fc",
+    "uds_decoded": "unknown SID 0x01"
+  },
+  {
+    "t_ms": 38324,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x0241",
+    "uds_hex": "ae 00",
+    "uds_decoded": "ResponseOnEvent.sub=0x00 data="
+  },
+  {
+    "t_ms": 38462,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0641",
+    "uds_hex": "ee 00",
+    "uds_decoded": "+ResponseOnEvent.sub=0x00 data="
+  },
+  {
+    "t_ms": 38644,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x0241",
+    "uds_hex": "1a 3f",
+    "uds_decoded": "ReadDataByLocalId.VIN(alt) data="
+  },
+  {
+    "t_ms": 38793,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0641",
+    "uds_hex": "7f 1a 78",
+    "uds_decoded": "NRC ReadDataByLocalId responsePending"
+  },
+  {
+    "t_ms": 39071,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0641",
+    "uds_hex": "5a 3f 59 53 33 46 44 34 39 59 58 34 31 30 31 32 30 31 37",
+    "uds_decoded": "+ReadDataByLocalId.VIN(alt) data=59 53 33 46 44 34 39 59 58 34 31 30 31 32 30 31 37"
+  },
+  {
+    "t_ms": 39262,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x0241",
+    "uds_hex": "27 0b",
+    "uds_decoded": "SecurityAccess.reqSeed_SAS data="
+  },
+  {
+    "t_ms": 39411,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0641",
+    "uds_hex": "7f 27 78",
+    "uds_decoded": "NRC SecurityAccess responsePending"
+  },
+  {
+    "t_ms": 39576,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0641",
+    "uds_hex": "67 0b c4 dc",
+    "uds_decoded": "+SecurityAccess.reqSeed_SAS data=c4 dc"
+  },
+  {
+    "t_ms": 39890,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x0101",
+    "uds_hex": "fe 3e",
+    "uds_decoded": "unknown SID 0xFE"
+  },
+  {
+    "t_ms": 40042,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x0101",
+    "uds_hex": "fe 3e",
+    "uds_decoded": "unknown SID 0xFE"
+  },
+  {
+    "t_ms": 41164,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x0241",
+    "uds_hex": "aa 01 01",
+    "uds_decoded": "DynamicallyDefineDID.sub=0x01 data=01"
+  },
+  {
+    "t_ms": 41312,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0641",
+    "uds_hex": "7f aa 78",
+    "uds_decoded": "NRC DynamicallyDefineDID responsePending"
+  },
+  {
+    "t_ms": 41330,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0541",
+    "uds_hex": "01 78 01 01 00 fd b6 fc",
+    "uds_decoded": "unknown SID 0x01"
+  },
+  {
+    "t_ms": 41596,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x0241",
+    "uds_hex": "aa 01 01",
+    "uds_decoded": "DynamicallyDefineDID.sub=0x01 data=01"
+  },
+  {
+    "t_ms": 41746,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0641",
+    "uds_hex": "7f aa 78",
+    "uds_decoded": "NRC DynamicallyDefineDID responsePending"
+  },
+  {
+    "t_ms": 41770,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0541",
+    "uds_hex": "01 78 01 01 00 fd b6 fc",
+    "uds_decoded": "unknown SID 0x01"
+  },
+  {
+    "t_ms": 41973,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x0241",
+    "uds_hex": "aa 01 01",
+    "uds_decoded": "DynamicallyDefineDID.sub=0x01 data=01"
+  },
+  {
+    "t_ms": 42139,
+    "tid": 9572,
+    "dir": "RX",
+    "can_id": "0x0541",
+    "uds_hex": "01 78 00 00 00 fc b6 fd",
+    "uds_decoded": "unknown SID 0x01"
+  },
+  {
+    "t_ms": 42429,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x0101",
+    "uds_hex": "fe 3e",
+    "uds_decoded": "unknown SID 0xFE"
+  },
+  {
+    "t_ms": 42513,
+    "tid": 9572,
+    "dir": "TX",
+    "can_id": "0x0101",
+    "uds_hex": "fe 3e",
+    "uds_decoded": "unknown SID 0xFE"
+  }
+]

@@ -1,0 +1,40 @@
+[     0ms] TX $0101  fe 01 3e                        General Motors Local Area Network
+[   101ms] TX $0101  fe 01 3e                        General Motors Local Area Network
+[   106ms] TX $0101  fe 01 3e                        General Motors Local Area Network
+[   672ms] TX $0101  fe 3e                           General Motors Local Area Network
+[   787ms] TX $0101  fe 3e                           General Motors Local Area Network
+[  1102ms] TX $0241  aa 01 01                        General Motors Local Area Network / ReadDataByPacketIdentifier
+[  1284ms] RX $0641  7f aa 78                        General Motors Local Area Network / NegativeResponse
+[  1300ms] RX $0541  01 79 06 02 02 fd 04 fc         General Motors Local Area Network
+[  1479ms] TX $0241  1a 9a                           General Motors Local Area Network / ReadDataByIdentifier  dataIdentifier=0x9A
+[  1651ms] RX $0641  5a 9a 03 04                     General Motors Local Area Network / ReadDataByIdentifierPositiveResponse
+[  1836ms] TX $0241  aa 01 06                        General Motors Local Area Network / ReadDataByPacketIdentifier
+[  2006ms] RX $0641  7f aa 78                        General Motors Local Area Network / NegativeResponse
+[  2045ms] RX $0541  06 0f 00 1f 00 00 00 00         General Motors Local Area Network
+[  3186ms] TX $0101  fe 3e                           General Motors Local Area Network
+[  3296ms] TX $0101  fe 3e                           General Motors Local Area Network
+[  5264ms] TX $0241  ae 03 02                        General Motors Local Area Network / DeviceControl
+[  5440ms] RX $0641  7f ae 78                        General Motors Local Area Network / NegativeResponse
+[  5700ms] TX $0101  fe 3e                           General Motors Local Area Network
+[  5810ms] TX $0101  fe 3e                           General Motors Local Area Network
+[  5909ms] RX $0641  ee 03                           General Motors Local Area Network / DeviceControlPositiveResponse
+[  6099ms] TX $0241  aa 01 0b                        General Motors Local Area Network / ReadDataByPacketIdentifier
+[  6270ms] RX $0641  7f aa 78                        General Motors Local Area Network / NegativeResponse
+[  6295ms] RX $0541  0b 43 80 f7 01 00 00 00         General Motors Local Area Network
+[  6498ms] TX $0241  aa 01 08                        General Motors Local Area Network / ReadDataByPacketIdentifier
+[  6669ms] RX $0641  7f aa 78                        General Motors Local Area Network / NegativeResponse
+[  7839ms] RX $0541  08 00 00 00 00 00 18 00         General Motors Local Area Network
+[  8213ms] TX $0101  fe 3e                           General Motors Local Area Network
+[  8314ms] TX $0101  fe 3e                           General Motors Local Area Network
+[ 10728ms] TX $0101  fe 3e                           General Motors Local Area Network
+[ 10841ms] TX $0101  fe 3e                           General Motors Local Area Network
+[ 13222ms] TX $0101  fe 3e                           General Motors Local Area Network
+[ 13333ms] TX $0101  fe 3e                           General Motors Local Area Network
+[ 15736ms] TX $0101  fe 3e                           General Motors Local Area Network
+[ 15758ms] TX $0101  fe 3e                           General Motors Local Area Network
+[ 18240ms] TX $0101  fe 3e                           General Motors Local Area Network
+[ 18350ms] TX $0101  fe 3e                           General Motors Local Area Network
+[ 20745ms] TX $0101  fe 3e                           General Motors Local Area Network
+[ 20852ms] TX $0101  fe 3e                           General Motors Local Area Network
+[ 22919ms] TX $0101  fe 3e                           General Motors Local Area Network
+[ 23025ms] TX $0101  fe 3e                           General Motors Local Area Network

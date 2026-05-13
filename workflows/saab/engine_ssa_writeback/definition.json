@@ -1,0 +1,18 @@
+{
+  "name": "saab/engine_ssa_writeback",
+  "vehicle": "SAAB engine ECM",
+  "purpose": "Write the 714B post-auth (signed by Bojer) back to the SSA region of the engine ECM's flash. Requires engine_sas_unlock to have completed in the same diag session.",
+  "captured_from": [],
+  "status": "DEFINITION_PENDING — no shim capture of $3D write-back yet",
+  "needed_capture": "Bench session with Tech2Win running a full SAS unlock + write-back end-to-end while CSTech2Win shim is active.",
+  "expected_shape": {
+    "service": "$3D (WriteMemoryByAddress)",
+    "addressing": "ISO-TP multi-frame; likely 3-byte memory address followed by 714 bytes payload, possibly chunked",
+    "ack": "$7D (positive response, sub=address echo)"
+  },
+  "open_questions": [
+    "Is the 714B written as one large multi-frame transfer, or chunked into smaller blocks?",
+    "What is the start address of the SSA region in flash? (We have offsets within the 714B but not the ECU flash mapping.)",
+    "Does Tech2Win send a checksum or hash after the write?"
+  ]
+}

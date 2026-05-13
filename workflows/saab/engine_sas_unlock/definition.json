@@ -1,0 +1,49 @@
+{
+  "name": "saab/engine_sas_unlock",
+  "vehicle": "SAAB engine ECM (T8 / E78 / ME9.6)",
+  "purpose": "Unlock SecurityAccess level $0B on the engine ECM so the SSA region can be written.",
+  "captured_from": [
+    "Chipsoft_RE/shim/cstech2win/captures/raw/cstech2win_shim_20260507-015619.log"
+  ],
+  "captured_coverage": "preamble + seed step (0xC4DC). $27 0C key + ack not captured — SAS server was unreachable in that session.",
+  "important_corrections": [
+    "CORRECTION 2026-05-11: Tech2Win does NOT send $10 02 StartDiagnosticSession before $27 0B. Our prior Android code had this wrong. The real preamble is $AA 01 01 (DynamicallyDefineDID)."
+  ],
+  "steps": [
+    {
+      "step": "dynamic_did_setup",
+      "tx": {"can_id": "0x0241", "uds": "AA 01 01"},
+      "expect": {"sid": "0xEA", "data_first_byte": "0x01"},
+      "timeout_ms": 500,
+      "comment": "DynamicallyDefineDID — actual Tech2Win preamble, observed in shim log."
+    },
+    {
+      "step": "request_seed_SAS",
+      "tx": {"can_id": "0x0241", "uds": "27 0B"},
+      "expect": {"sid": "0x67", "sub": "0x0B", "data_len": 2},
+      "timeout_ms": 500,
+      "on_pending": "wait_and_repoll",
+      "store_seed_in": "session_var.engine_sas_seed",
+      "known_values": {"bench_2017": "0xC4DC", "field_1367": "0x77E5"}
+    },
+    {
+      "step": "compute_key",
+      "comment": "security_calc.get_key_from_seed(seed, 0x0367). RE'd 33/33 vs Bojer.",
+      "input": "session_var.engine_sas_seed",
+      "algorithm_id": "0x0367",
+      "output": "session_var.engine_sas_key",
+      "known_values": {"bench_2017": "0x4EED", "field_1367": "0xDA1E"}
+    },
+    {
+      "step": "send_key_SAS",
+      "tx": {"can_id": "0x0241", "uds": "27 0C ${engine_sas_key_hi} ${engine_sas_key_lo}"},
+      "expect": {"sid": "0x67", "sub": "0x0C"},
+      "timeout_ms": 500,
+      "on_pending": "wait_and_repoll",
+      "on_NRC_35": "invalidKey — abort, do not retry",
+      "on_NRC_36": "exceededAttempts — wait for ECM lockout",
+      "on_NRC_37": "timeDelayNotExpired — wait 10s before retry",
+      "status": "DEFINITION_FROM_SPEC — wire bytes confirmed by GMW3110 §8.8.5.1, but no shim capture yet of a successful ack"
+    }
+  ]
+}

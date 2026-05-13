@@ -1,0 +1,47 @@
+{
+  "name": "saab/seed_sweep_l01",
+  "vehicle": "SAAB 9-3 (T8/E78), 9-5 (T7)",
+  "purpose": "Collect SecurityAccess level $01 seeds from every ECM on the bus to populate the SSA pre-auth SKA tuple region (0x132..0x191).",
+  "tuple_target_offset": "0x132 + slot_index * 8",
+  "captured_from": [
+    "Chipsoft_RE/shim/cstech2win/captures/raw/cstech2win_shim_20260507-015619.log"
+  ],
+  "important_corrections": [
+    "CORRECTION 2026-05-11: No $10 02 in the actual Tech2Win capture. Preamble is $AA 01 01 on $0241 only."
+  ],
+  "steps": [
+    {
+      "step": "dynamic_did_setup",
+      "tx": {"can_id": "0x0241", "uds": "AA 01 01"},
+      "expect": {"sid": "0xEA"},
+      "timeout_ms": 500
+    },
+    {
+      "step": "loop_each_ecm",
+      "ecm_list": [
+        {"slot": 0,  "request_can_id": "0x0257", "reply_can_id": "0x0657"},
+        {"slot": 1,  "request_can_id": "0x0242", "reply_can_id": "0x0642"},
+        {"slot": 2,  "request_can_id": "0x0241", "reply_can_id": "0x0641"},
+        {"slot": 3,  "request_can_id": "0x0243", "reply_can_id": "0x0643"},
+        {"slot": 4,  "request_can_id": "0x07E0", "reply_can_id": "0x07E8", "comment": "OBD-II engine"},
+        {"slot": 7,  "request_can_id": "0x0246", "reply_can_id": "0x0646"},
+        {"slot": 8,  "request_can_id": "0x0248", "reply_can_id": "0x0648"},
+        {"slot": 9,  "request_can_id": "0x024A", "reply_can_id": "0x064A"},
+        {"slot": 10, "request_can_id": "0x024B", "reply_can_id": "0x064B"},
+        {"slot": 11, "request_can_id": "0x07E1", "reply_can_id": "0x07E9", "comment": "OBD-II trans"}
+      ],
+      "for_each": {
+        "tx": {"can_id": "${request_can_id}", "uds": "27 01"},
+        "expect": {"sid": "0x67", "sub": "0x01", "data_len": 2},
+        "timeout_ms": 500,
+        "on_pending": "wait_and_repoll",
+        "on_NRC_22": "skip_ecm",
+        "store_seed_at": "ssa[0x132 + slot * 8 + 4..6]",
+        "store_algo_at": "ssa[0x132 + slot * 8 + 2..4]"
+      }
+    }
+  ],
+  "open_questions": [
+    "slot 5 (algo 0x0362) and slot 6 (algo 0x0360) — request CAN IDs unknown"
+  ]
+}
