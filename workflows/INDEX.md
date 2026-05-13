@@ -7,14 +7,14 @@
 | [saab/seed_sweep_l01](saab/seed_sweep_l01/definition.json) | SAAB | ✅ captured (10 of 12 ECMs) | $27 01 across 12 CAN-IDs; slots 5/6 source unknown |
 | [saab/engine_sas_unlock](saab/engine_sas_unlock/definition.json) | SAAB engine | ⚠️ partial | seed step captured (0xC4DC); $27 0C ack pending |
 | [saab/engine_ssa_writeback](saab/engine_ssa_writeback/definition.json) | SAAB engine | ❌ pending | $3D write of 714B; needs bench capture |
-| [saab/check_ignition_key_status](saab/check_ignition_key_status/definition.json) | SAAB engine | ✅ captured | $AE 03 02 + DPID 0x0B; bit layout TBD |
 
 ## Source captures referenced
 
 - `cstech2win_shim_20260507-015619.log` — primary, 146 req+rsp rows
 - `cstech2win_shim_20260507-175608.log` — 178 rows, broader sweep
 - `cstech2win_shim_20260507-014723.log` — 130 rows
-- `cstech2win_shim_20260513-113205.log` — 2026-05-13 check ignition key status, 51 rows
+- `cstech2win_shim_20260513-113205.log` — 2026-05-13 check ignition key status; catalogued in [OpenSAAB/commands/saab/check_ignition_key_status.yaml](https://github.com/djfremen/OpenSAAB/blob/main/commands/saab/check_ignition_key_status.yaml)
+- `cstech2win_shim_20260513-111745.log` — 2026-05-13 connect + L01 sweep on bench (seed `f6 31` → key `de 40`)
 
 ## How to consume
 
