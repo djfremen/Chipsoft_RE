@@ -8,8 +8,9 @@
 #include "recording.h"
 #include "fremsoft.h"
 
-#define JSMN_HEADER
-#include "vendor/jsmn.h"
+// Single-TU jsmn: defining JSMN_STATIC pulls the implementation inline
+// (and marks the symbols static) so this is the only translation unit
+// that needs jsmn. No JSMN_HEADER guard.
 #define JSMN_STATIC
 #include "vendor/jsmn.h"
 
