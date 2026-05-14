@@ -38,9 +38,20 @@ typedef enum {
 // Lifecycle — called from dllmain.c at process attach/detach.
 //
 // Returns 0 on success. Reads the recording path from the registry
-// (HKLM\SOFTWARE\OpenSAAB\Collector\PlaybackRecording).
+// (HKLM\SOFTWARE\OpenSAAB\Collector\PlaybackRecording). Also opens
+// the fremsoft activity log at %TEMP%\fremsoft_<wall_ms>.log — same
+// line format as the cstech2win shim so the bundled scapy decoder
+// (fremsoft-decoder.exe in the OpenSAAB Collector tray) can tail-pipe
+// it without special-casing.
 int  fremsoft_init(fremsoft_mode_t mode);
 void fremsoft_shutdown(void);
+
+// Per-call activity logging (matching the cstech2win shim's format).
+// fremsoft.c emits these around every PDUStartComPrimitive +
+// scheduled-event delivery so the decoder console sees a live UDS
+// timeline even though FremSoft is fabricating the responses.
+void fremsoft_log_req_pdu(const uint8_t* bytes, uint32_t len);
+void fremsoft_log_rsp_uds(const uint8_t* bytes, uint32_t len);
 
 // Mode accessor — wrappers consult this to decide route at call time.
 fremsoft_mode_t fremsoft_get_mode(void);

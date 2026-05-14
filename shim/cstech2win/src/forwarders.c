@@ -55,112 +55,178 @@ void resolve_passthrough_exports(HMODULE hReal) {
 }
 
 // PDUCancelComPrimitive (ord 1) — forwarder
-__declspec(naked) void PDUCancelComPrimitive(void) {
-    __asm { jmp dword ptr [g_real_PDUCancelComPrimitive] }
+__attribute__((naked)) void PDUCancelComPrimitive(void) {
+    __asm__ __volatile__ (
+        "jmp *%0\n"
+        : : "m" (g_real_PDUCancelComPrimitive)
+    );
 }
 
 // PDUConnect (ord 2) — forwarder
-__declspec(naked) void PDUConnect(void) {
-    __asm { jmp dword ptr [g_real_PDUConnect] }
+__attribute__((naked)) void PDUConnect(void) {
+    __asm__ __volatile__ (
+        "jmp *%0\n"
+        : : "m" (g_real_PDUConnect)
+    );
 }
 
 // PDUCreateComLogicalLink (ord 4) — forwarder
-__declspec(naked) void PDUCreateComLogicalLink(void) {
-    __asm { jmp dword ptr [g_real_PDUCreateComLogicalLink] }
+__attribute__((naked)) void PDUCreateComLogicalLink(void) {
+    __asm__ __volatile__ (
+        "jmp *%0\n"
+        : : "m" (g_real_PDUCreateComLogicalLink)
+    );
 }
 
 // PDUDestroyComLogicalLink (ord 5) — forwarder
-__declspec(naked) void PDUDestroyComLogicalLink(void) {
-    __asm { jmp dword ptr [g_real_PDUDestroyComLogicalLink] }
+__attribute__((naked)) void PDUDestroyComLogicalLink(void) {
+    __asm__ __volatile__ (
+        "jmp *%0\n"
+        : : "m" (g_real_PDUDestroyComLogicalLink)
+    );
 }
 
 // PDUDestroyItem (ord 6) — forwarder
-__declspec(naked) void PDUDestroyItem(void) {
-    __asm { jmp dword ptr [g_real_PDUDestroyItem] }
+__attribute__((naked)) void PDUDestroyItem(void) {
+    __asm__ __volatile__ (
+        "jmp *%0\n"
+        : : "m" (g_real_PDUDestroyItem)
+    );
 }
 
 // PDUDisconnect (ord 8) — forwarder
-__declspec(naked) void PDUDisconnect(void) {
-    __asm { jmp dword ptr [g_real_PDUDisconnect] }
+__attribute__((naked)) void PDUDisconnect(void) {
+    __asm__ __volatile__ (
+        "jmp *%0\n"
+        : : "m" (g_real_PDUDisconnect)
+    );
 }
 
 // PDUGetComParam (ord 9) — forwarder
-__declspec(naked) void PDUGetComParam(void) {
-    __asm { jmp dword ptr [g_real_PDUGetComParam] }
+__attribute__((naked)) void PDUGetComParam(void) {
+    __asm__ __volatile__ (
+        "jmp *%0\n"
+        : : "m" (g_real_PDUGetComParam)
+    );
 }
 
 // PDUGetConflictingResources (ord 10) — forwarder
-__declspec(naked) void PDUGetConflictingResources(void) {
-    __asm { jmp dword ptr [g_real_PDUGetConflictingResources] }
+__attribute__((naked)) void PDUGetConflictingResources(void) {
+    __asm__ __volatile__ (
+        "jmp *%0\n"
+        : : "m" (g_real_PDUGetConflictingResources)
+    );
 }
 
 // PDUGetLastError (ord 12) — forwarder
-__declspec(naked) void PDUGetLastError(void) {
-    __asm { jmp dword ptr [g_real_PDUGetLastError] }
+__attribute__((naked)) void PDUGetLastError(void) {
+    __asm__ __volatile__ (
+        "jmp *%0\n"
+        : : "m" (g_real_PDUGetLastError)
+    );
 }
 
 // PDUGetModuleIds (ord 13) — forwarder
-__declspec(naked) void PDUGetModuleIds(void) {
-    __asm { jmp dword ptr [g_real_PDUGetModuleIds] }
+__attribute__((naked)) void PDUGetModuleIds(void) {
+    __asm__ __volatile__ (
+        "jmp *%0\n"
+        : : "m" (g_real_PDUGetModuleIds)
+    );
 }
 
 // PDUGetObjectId (ord 14) — forwarder
-__declspec(naked) void PDUGetObjectId(void) {
-    __asm { jmp dword ptr [g_real_PDUGetObjectId] }
+__attribute__((naked)) void PDUGetObjectId(void) {
+    __asm__ __volatile__ (
+        "jmp *%0\n"
+        : : "m" (g_real_PDUGetObjectId)
+    );
 }
 
 // PDUGetResourceIds (ord 15) — forwarder
-__declspec(naked) void PDUGetResourceIds(void) {
-    __asm { jmp dword ptr [g_real_PDUGetResourceIds] }
+__attribute__((naked)) void PDUGetResourceIds(void) {
+    __asm__ __volatile__ (
+        "jmp *%0\n"
+        : : "m" (g_real_PDUGetResourceIds)
+    );
 }
 
 // PDUGetResourceStatus (ord 16) — forwarder
-__declspec(naked) void PDUGetResourceStatus(void) {
-    __asm { jmp dword ptr [g_real_PDUGetResourceStatus] }
+__attribute__((naked)) void PDUGetResourceStatus(void) {
+    __asm__ __volatile__ (
+        "jmp *%0\n"
+        : : "m" (g_real_PDUGetResourceStatus)
+    );
 }
 
 // PDUGetStatus (ord 17) — forwarder
-__declspec(naked) void PDUGetStatus(void) {
-    __asm { jmp dword ptr [g_real_PDUGetStatus] }
+__attribute__((naked)) void PDUGetStatus(void) {
+    __asm__ __volatile__ (
+        "jmp *%0\n"
+        : : "m" (g_real_PDUGetStatus)
+    );
 }
 
 // PDUGetTimestamp (ord 18) — forwarder
-__declspec(naked) void PDUGetTimestamp(void) {
-    __asm { jmp dword ptr [g_real_PDUGetTimestamp] }
+__attribute__((naked)) void PDUGetTimestamp(void) {
+    __asm__ __volatile__ (
+        "jmp *%0\n"
+        : : "m" (g_real_PDUGetTimestamp)
+    );
 }
 
 // PDUGetUniqueRespIdTable (ord 19) — forwarder
-__declspec(naked) void PDUGetUniqueRespIdTable(void) {
-    __asm { jmp dword ptr [g_real_PDUGetUniqueRespIdTable] }
+__attribute__((naked)) void PDUGetUniqueRespIdTable(void) {
+    __asm__ __volatile__ (
+        "jmp *%0\n"
+        : : "m" (g_real_PDUGetUniqueRespIdTable)
+    );
 }
 
 // PDUGetVersion (ord 20) — forwarder
-__declspec(naked) void PDUGetVersion(void) {
-    __asm { jmp dword ptr [g_real_PDUGetVersion] }
+__attribute__((naked)) void PDUGetVersion(void) {
+    __asm__ __volatile__ (
+        "jmp *%0\n"
+        : : "m" (g_real_PDUGetVersion)
+    );
 }
 
 // PDULockResource (ord 22) — forwarder
-__declspec(naked) void PDULockResource(void) {
-    __asm { jmp dword ptr [g_real_PDULockResource] }
+__attribute__((naked)) void PDULockResource(void) {
+    __asm__ __volatile__ (
+        "jmp *%0\n"
+        : : "m" (g_real_PDULockResource)
+    );
 }
 
 // PDUModuleConnect (ord 23) — forwarder
-__declspec(naked) void PDUModuleConnect(void) {
-    __asm { jmp dword ptr [g_real_PDUModuleConnect] }
+__attribute__((naked)) void PDUModuleConnect(void) {
+    __asm__ __volatile__ (
+        "jmp *%0\n"
+        : : "m" (g_real_PDUModuleConnect)
+    );
 }
 
 // PDUModuleDisconnect (ord 24) — forwarder
-__declspec(naked) void PDUModuleDisconnect(void) {
-    __asm { jmp dword ptr [g_real_PDUModuleDisconnect] }
+__attribute__((naked)) void PDUModuleDisconnect(void) {
+    __asm__ __volatile__ (
+        "jmp *%0\n"
+        : : "m" (g_real_PDUModuleDisconnect)
+    );
 }
 
 // PDUSetUniqueRespIdTable (ord 27) — forwarder
-__declspec(naked) void PDUSetUniqueRespIdTable(void) {
-    __asm { jmp dword ptr [g_real_PDUSetUniqueRespIdTable] }
+__attribute__((naked)) void PDUSetUniqueRespIdTable(void) {
+    __asm__ __volatile__ (
+        "jmp *%0\n"
+        : : "m" (g_real_PDUSetUniqueRespIdTable)
+    );
 }
 
 // PDUUnlockResource (ord 29) — forwarder
-__declspec(naked) void PDUUnlockResource(void) {
-    __asm { jmp dword ptr [g_real_PDUUnlockResource] }
+__attribute__((naked)) void PDUUnlockResource(void) {
+    __asm__ __volatile__ (
+        "jmp *%0\n"
+        : : "m" (g_real_PDUUnlockResource)
+    );
 }
 

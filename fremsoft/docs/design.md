@@ -108,6 +108,28 @@ TX call, then the delivery thread sleeps until that time and fires.
 For the MVP this is "good enough." If we hit timing accuracy issues
 we'll switch to multimedia timers.
 
+## Live activity log (decoder-friendly)
+
+When FremSoft is active (playback or standalone mode), it ALSO writes
+its full activity to `%TEMP%\fremsoft_<wall_ms>.log` in the **same
+line format** the existing CSTech2Win shim uses:
+
+```
+<ms>|<tid>|HEX|REQ-PDU|len=<n>|<chipsoft 4-byte header><uds bytes>
+<ms>|<tid>|HEX|RSP-UDS|len=<n>|<chipsoft 4-byte header><uds bytes>
+```
+
+This means the same `fremsoft-decoder.exe` (PyInstaller-bundled
+scapy-based dissector that ships in the OpenSAAB Collector) tail-pipes
+this file with no special-casing. The Collector's tray already
+recognises `fremsoft_*` as a third log family alongside
+`cstech2win_shim_*` and `j2534_shim_*`.
+
+Practical effect: launch Tech2Win against FremSoft, open the tray's
+"Open decoded console (scapy)" menu item, and watch decoded UDS
+service names scroll past as Tech2Win exercises the API — even
+though no real ECM is present.
+
 ## Unknown-request log format
 
 ```

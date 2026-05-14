@@ -154,6 +154,22 @@ shim/cstech2win/
 - `PDUSetComParam` logging — captures bitrate / timing config so we can confirm which bus Tech2Win opens.
 - Log analyzer: parse pipe-delimited log → annotated transcript with GMW3110 §8.8 service tagging.
 
+## Bench pre-auth decode handoff — 2026-05-07
+
+This path is **local-only**: no Bojer call, no network dependency. If Tech2Win can dump/export the 714-byte pre-auth SSA, save it as:
+
+```bash
+/tmp/bench_pre_auth.bin
+```
+
+Then run from the workspace root:
+
+```bash
+python3 Chipsoft_RE/shim/cstech2win/scripts/decode_ssa_for_seed.py /tmp/bench_pre_auth.bin --seed 0xC4DC
+```
+
+Why: the bench ECM returned deterministic seed `0xC4DC` for `$27 $0B`. The pre-auth SSA contains the ECU-programmed `(algo, seed)` tuples, usually with `key=0xFFFF` before stamping. Once the script finds which `algo` belongs to `0xC4DC`, it uses `security_calc.py` to compute the exact one key locally — collapsing six candidate attempts to one.
+
 ## Risks / known issues
 
 - **Path collision.** If Tech2Win uses `LoadLibraryEx(LOAD_LIBRARY_SEARCH_SYSTEM32)` or has a hardcoded full path bypassing the install dir, our shim isn't loaded. Mitigation: verify with Process Monitor (`procmon.exe`) — filter on `Tech2Win.exe` + `CSTech2Win.dll` to confirm which path is loaded.

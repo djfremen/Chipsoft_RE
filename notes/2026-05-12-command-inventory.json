@@ -1,0 +1,529 @@
+{
+  "generated": "2026-05-12",
+  "logs": {
+    "2026-05-06-shim-v1-first-run.log": 58,
+    "2026-05-06-shim-v3-ptr-deref.log": 58,
+    "2026-05-07-shim-v4-rsp-payload.log": 86,
+    "2026-05-07-shim-v5-canonical-struct.log": 129,
+    "2026-05-07-shim-v6-seed-deterministic.log": 145
+  },
+  "addresses_tx": {
+    "0x0101": 123,
+    "0x0241": 98,
+    "0x0245": 5,
+    "0x0242": 10,
+    "0x0243": 10,
+    "0x0246": 10,
+    "0x0248": 10,
+    "0x0249": 5,
+    "0x024A": 10,
+    "0x024B": 10,
+    "0x024F": 5,
+    "0x0257": 6,
+    "0x07E0": 4,
+    "0x07E1": 5,
+    "0x0247": 2
+  },
+  "addresses_rx": {
+    "0x0641": 26,
+    "0x0541": 18,
+    "0x07E9": 6,
+    "0x0643": 12,
+    "0x0647": 8,
+    "0x07E8": 4,
+    "0x0651": 4,
+    "0x0645": 10,
+    "0x065B": 4,
+    "0x0642": 8,
+    "0x0644": 4,
+    "0x0646": 8,
+    "0x0648": 8,
+    "0x0649": 6,
+    "0x064A": 8,
+    "0x064B": 8,
+    "0x064D": 4,
+    "0x064F": 6,
+    "0x0657": 7,
+    "0x065C": 4
+  },
+  "tx_services": {
+    "0x0101": {
+      "SAAB_FunctionalBroadcastPrefix": {
+        "count": 123,
+        "examples": [
+          "fe 01 3e",
+          "fe 1a 9a",
+          "fe 3e"
+        ]
+      }
+    },
+    "0x0241": {
+      "ReadDataByPacketIdentifier": {
+        "count": 73,
+        "examples": [
+          "aa 01 01"
+        ]
+      },
+      "ReadDataByIdentifier": {
+        "count": 10,
+        "examples": [
+          "1a 90",
+          "1a 3f"
+        ]
+      },
+      "SecurityAccess": {
+        "count": 10,
+        "examples": [
+          "27 01",
+          "27 0b"
+        ]
+      },
+      "DeviceControl": {
+        "count": 5,
+        "examples": [
+          "ae 00"
+        ]
+      }
+    },
+    "0x0245": {
+      "ReadDataByIdentifier": {
+        "count": 5,
+        "examples": [
+          "1a 90"
+        ]
+      }
+    },
+    "0x0242": {
+      "ReadDataByIdentifier": {
+        "count": 5,
+        "examples": [
+          "1a 90"
+        ]
+      },
+      "SecurityAccess": {
+        "count": 5,
+        "examples": [
+          "27 01"
+        ]
+      }
+    },
+    "0x0243": {
+      "ReadDataByIdentifier": {
+        "count": 5,
+        "examples": [
+          "1a 90"
+        ]
+      },
+      "SecurityAccess": {
+        "count": 5,
+        "examples": [
+          "27 01"
+        ]
+      }
+    },
+    "0x0246": {
+      "ReadDataByIdentifier": {
+        "count": 5,
+        "examples": [
+          "1a 90"
+        ]
+      },
+      "SecurityAccess": {
+        "count": 5,
+        "examples": [
+          "27 01"
+        ]
+      }
+    },
+    "0x0248": {
+      "ReadDataByIdentifier": {
+        "count": 5,
+        "examples": [
+          "1a 90"
+        ]
+      },
+      "SecurityAccess": {
+        "count": 5,
+        "examples": [
+          "27 01"
+        ]
+      }
+    },
+    "0x0249": {
+      "ReadDataByIdentifier": {
+        "count": 5,
+        "examples": [
+          "1a 90"
+        ]
+      }
+    },
+    "0x024A": {
+      "ReadDataByIdentifier": {
+        "count": 5,
+        "examples": [
+          "1a 90"
+        ]
+      },
+      "SecurityAccess": {
+        "count": 5,
+        "examples": [
+          "27 01"
+        ]
+      }
+    },
+    "0x024B": {
+      "ReadDataByIdentifier": {
+        "count": 5,
+        "examples": [
+          "1a 90"
+        ]
+      },
+      "SecurityAccess": {
+        "count": 5,
+        "examples": [
+          "27 01"
+        ]
+      }
+    },
+    "0x024F": {
+      "ReadDataByIdentifier": {
+        "count": 5,
+        "examples": [
+          "1a 90"
+        ]
+      }
+    },
+    "0x0257": {
+      "SecurityAccess": {
+        "count": 6,
+        "examples": [
+          "27 01"
+        ]
+      }
+    },
+    "0x07E0": {
+      "SecurityAccess": {
+        "count": 3,
+        "examples": [
+          "27 01"
+        ]
+      },
+      "ReadDataByIdentifier": {
+        "count": 1,
+        "examples": [
+          "1a 90"
+        ]
+      }
+    },
+    "0x07E1": {
+      "SecurityAccess": {
+        "count": 5,
+        "examples": [
+          "27 01"
+        ]
+      }
+    },
+    "0x0247": {
+      "ReadDataByIdentifier": {
+        "count": 1,
+        "examples": [
+          "1a 90"
+        ]
+      },
+      "SecurityAccess": {
+        "count": 1,
+        "examples": [
+          "27 01"
+        ]
+      }
+    }
+  },
+  "rx_services": {
+    "0x0641": {
+      "NegativeResponse(ReadDataByPacketIdentifier, responsePending)": {
+        "count": 8,
+        "examples": [
+          "7f aa 78"
+        ]
+      },
+      "ReadDataByIdentifierPositiveResponse": {
+        "count": 8,
+        "examples": [
+          "5a 9a 03 04",
+          "5a 90 59 53 33 46 44 34 39 59 58 34 31 30 31 32 30 31 37",
+          "5a 3f 59 53 33 46 44 34 39 59 58 34 31 30 31 32 30 31 37"
+        ]
+      },
+      "SecurityAccessPositiveResponse": {
+        "count": 4,
+        "examples": [
+          "67 01 f6 31",
+          "67 0b c4 dc"
+        ]
+      },
+      "DeviceControlPositiveResponse": {
+        "count": 2,
+        "examples": [
+          "ee 00"
+        ]
+      },
+      "NegativeResponse(ReadDataByIdentifier, responsePending)": {
+        "count": 2,
+        "examples": [
+          "7f 1a 78"
+        ]
+      },
+      "NegativeResponse(SecurityAccess, responsePending)": {
+        "count": 2,
+        "examples": [
+          "7f 27 78"
+        ]
+      }
+    },
+    "0x0541": {
+      "SID_0x01": {
+        "count": 18,
+        "examples": [
+          "01 77 06 02 02 fd 04 fc",
+          "01 77 03 01 01 fd 04 fc",
+          "01 78 01 01 00 fd 43 fc"
+        ]
+      }
+    },
+    "0x07E9": {
+      "ReadDataByIdentifierPositiveResponse": {
+        "count": 4,
+        "examples": [
+          "5a 9a 01 01"
+        ]
+      },
+      "SecurityAccessPositiveResponse": {
+        "count": 2,
+        "examples": [
+          "67 01 d2 dc"
+        ]
+      }
+    },
+    "0x0643": {
+      "ReadDataByIdentifierPositiveResponse": {
+        "count": 10,
+        "examples": [
+          "5a 9a 03 01",
+          "5a 9a 01 07",
+          "5a 90 59 53 33 46 44 34 39 59 58 34 31 30 31 32 30 31 37"
+        ]
+      },
+      "SecurityAccessPositiveResponse": {
+        "count": 2,
+        "examples": [
+          "67 01 a0 e9"
+        ]
+      }
+    },
+    "0x0647": {
+      "ReadDataByIdentifierPositiveResponse": {
+        "count": 8,
+        "examples": [
+          "5a 9a 02 0a"
+        ]
+      }
+    },
+    "0x07E8": {
+      "ReadDataByIdentifierPositiveResponse": {
+        "count": 4,
+        "examples": [
+          "5a 9a 01 06"
+        ]
+      }
+    },
+    "0x0651": {
+      "ReadDataByIdentifierPositiveResponse": {
+        "count": 4,
+        "examples": [
+          "5a 9a 03 02"
+        ]
+      }
+    },
+    "0x0645": {
+      "ReadDataByIdentifierPositiveResponse": {
+        "count": 10,
+        "examples": [
+          "5a 9a 03 04",
+          "5a 9a 01 0a",
+          "5a 90 59 53 33 46 44 34 39 59 58 34 31 30 31 32 30 31 37"
+        ]
+      }
+    },
+    "0x065B": {
+      "ReadDataByIdentifierPositiveResponse": {
+        "count": 4,
+        "examples": [
+          "5a 9a 03 03"
+        ]
+      }
+    },
+    "0x0642": {
+      "ReadDataByIdentifierPositiveResponse": {
+        "count": 6,
+        "examples": [
+          "5a 9a 01 09",
+          "5a 90 59 53 33 46 44 34 39 59 58 34 31 30 31 32 30 31 37"
+        ]
+      },
+      "SecurityAccessPositiveResponse": {
+        "count": 2,
+        "examples": [
+          "67 01 a7 8c"
+        ]
+      }
+    },
+    "0x0644": {
+      "ReadDataByIdentifierPositiveResponse": {
+        "count": 4,
+        "examples": [
+          "5a 9a 01 04"
+        ]
+      }
+    },
+    "0x0646": {
+      "ReadDataByIdentifierPositiveResponse": {
+        "count": 6,
+        "examples": [
+          "5a 9a 01 02",
+          "5a 90 59 53 33 46 44 34 39 59 58 34 31 30 31 32 30 31 37"
+        ]
+      },
+      "SecurityAccessPositiveResponse": {
+        "count": 2,
+        "examples": [
+          "67 01 04 63"
+        ]
+      }
+    },
+    "0x0648": {
+      "ReadDataByIdentifierPositiveResponse": {
+        "count": 6,
+        "examples": [
+          "5a 9a 01 07",
+          "5a 90 59 53 33 46 44 34 39 59 58 34 31 30 31 32 30 31 37"
+        ]
+      },
+      "SecurityAccessPositiveResponse": {
+        "count": 2,
+        "examples": [
+          "67 01 c8 6e"
+        ]
+      }
+    },
+    "0x0649": {
+      "ReadDataByIdentifierPositiveResponse": {
+        "count": 6,
+        "examples": [
+          "5a 9a 01 05",
+          "5a 90 59 53 33 46 44 34 39 59 58 34 31 30 31 32 30 31 37"
+        ]
+      }
+    },
+    "0x064A": {
+      "ReadDataByIdentifierPositiveResponse": {
+        "count": 6,
+        "examples": [
+          "5a 9a 01 0a",
+          "5a 90 59 53 33 46 44 34 39 59 58 34 31 30 31 32 30 31 37"
+        ]
+      },
+      "SecurityAccessPositiveResponse": {
+        "count": 2,
+        "examples": [
+          "67 01 8d 07"
+        ]
+      }
+    },
+    "0x064B": {
+      "ReadDataByIdentifierPositiveResponse": {
+        "count": 6,
+        "examples": [
+          "5a 9a 01 07",
+          "5a 90 59 53 33 46 44 34 39 59 58 34 31 30 31 32 30 31 37"
+        ]
+      },
+      "SecurityAccessPositiveResponse": {
+        "count": 2,
+        "examples": [
+          "67 01 80 54"
+        ]
+      }
+    },
+    "0x064D": {
+      "ReadDataByIdentifierPositiveResponse": {
+        "count": 4,
+        "examples": [
+          "5a 9a 01 04"
+        ]
+      }
+    },
+    "0x064F": {
+      "ReadDataByIdentifierPositiveResponse": {
+        "count": 6,
+        "examples": [
+          "5a 9a 01 02",
+          "5a 90 59 53 33 46 44 34 39 59 58 34 31 30 31 32 30 31 37"
+        ]
+      }
+    },
+    "0x0657": {
+      "ReadDataByIdentifierPositiveResponse": {
+        "count": 4,
+        "examples": [
+          "5a 9a 01 05"
+        ]
+      },
+      "SecurityAccessPositiveResponse": {
+        "count": 2,
+        "examples": [
+          "67 01 3b 86"
+        ]
+      },
+      "NegativeResponse(SecurityAccess, requiredTimeDelayNotExpired)": {
+        "count": 1,
+        "examples": [
+          "7f 27 37"
+        ]
+      }
+    },
+    "0x065C": {
+      "ReadDataByIdentifierPositiveResponse": {
+        "count": 4,
+        "examples": [
+          "5a 9a 01 01"
+        ]
+      }
+    }
+  },
+  "nrc_by_sid": {
+    "0xAA": {
+      "0x78": 8
+    },
+    "0x1A": {
+      "0x78": 2
+    },
+    "0x27": {
+      "0x78": 2,
+      "0x37": 1
+    }
+  },
+  "sid_totals_tx": {
+    "0xFE": 123,
+    "0xAA": 73,
+    "0x1A": 57,
+    "0x27": 55,
+    "0xAE": 5
+  },
+  "sid_totals_rx": {
+    "0x7F": 13,
+    "0x01": 18,
+    "0x5A": 110,
+    "0x67": 20,
+    "0xEE": 2
+  }
+}
