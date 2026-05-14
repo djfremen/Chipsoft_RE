@@ -12,9 +12,15 @@ if errorlevel 1 goto fail
 if not exist build mkdir build
 
 cl /nologo /LD /O2 /MT /D_USRDLL /D_WINDLL /Fobuild\ ^
+   /I ..\..\fremsoft\src ^
+   /I ..\..\fremsoft\src\vendor ^
    src\dllmain.c src\log.c src\wrappers.c src\forwarders.c ^
+   ..\..\fremsoft\src\fremsoft.c ^
+   ..\..\fremsoft\src\recording.c ^
+   ..\..\fremsoft\src\scheduler.c ^
+   ..\..\fremsoft\src\unknown_log.c ^
    /link /DEF:src\cstech2win.def /OUT:build\CSTech2Win.dll ^
-         /IMPLIB:build\CSTech2Win.lib
+         /IMPLIB:build\CSTech2Win.lib advapi32.lib
 if errorlevel 1 goto fail
 
 echo.

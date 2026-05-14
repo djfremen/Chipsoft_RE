@@ -20,6 +20,7 @@
 
 #include "shim.h"
 #include "wrappers.h"
+#include "../../../fremsoft/src/fremsoft.h"
 
 // ---- typedefs for the 7 instrumented exports --------------------------------
 
@@ -151,6 +152,16 @@ T_PDU_ERROR PDUAPI PDUStartComPrimitive(UNUM32 hMod, UNUM32 hCLL,
     if (pCoPData && CoPDataSize > 0 && CoPDataSize <= 4096) {
         shim_log_hex("REQ-PDU", pCoPData, CoPDataSize);
     }
+    // FremSoft dispatch: in PLAYBACK / STANDALONE we serve replies from a
+    // recording instead of forwarding to the real DLL. The wrapper still
+    // logs above for cross-checking against the real-bus shim format.
+    if (fremsoft_get_mode() >= FREMSOFT_MODE_PLAYBACK) {
+        T_PDU_ERROR r = fremsoft_PDUStartComPrimitive(
+            hMod, hCLL, CoPType, CoPDataSize, pCoPData, pCopCtrlData, pCoPTag, phCoP);
+        shim_log("RET  |PDUStartComPrimitive[FREM]|err=%u hCoP=0x%08X",
+                 r, (phCoP && r == 0) ? *phCoP : 0);
+        return r;
+    }
     T_PDU_ERROR r = ((fn_PDUStartComPrimitive)g_real_PDUStartComPrimitive)(
         hMod, hCLL, CoPType, CoPDataSize, pCoPData, pCopCtrlData, pCoPTag, phCoP);
     shim_log("RET  |PDUStartComPrimitive|err=%u hCoP=0x%08X",
@@ -195,6 +206,9 @@ typedef struct {
 } PDU_RESULT_DATA_MIN;     // 44 bytes total
 
 T_PDU_ERROR PDUAPI PDUGetEventItem(UNUM32 hMod, UNUM32 hCLL, void** pEventItem) {
+    if (fremsoft_get_mode() >= FREMSOFT_MODE_PLAYBACK) {
+        return fremsoft_PDUGetEventItem(hMod, hCLL, pEventItem);
+    }
     T_PDU_ERROR r = ((fn_PDUGetEventItem)g_real_PDUGetEventItem)(hMod, hCLL, pEventItem);
     if (r == 0 && pEventItem && *pEventItem) {
         PDU_EVENT_ITEM_MIN* ev = (PDU_EVENT_ITEM_MIN*)*pEventItem;
@@ -320,6 +334,10 @@ T_PDU_ERROR PDUAPI PDURegisterEventCallback(UNUM32 hMod, UNUM32 hCLL,
                                             void (PDUAPI *cb)(UNUM32, UNUM32, void*)) {
     shim_log("CALL |PDURegisterEventCallback|hMod=0x%08X hCLL=0x%08X cb=%p",
              hMod, hCLL, (void*)cb);
+
+    if (fremsoft_get_mode() >= FREMSOFT_MODE_PLAYBACK) {
+        return fremsoft_PDURegisterEventCallback(hMod, hCLL, cb);
+    }
 
     // Lazy-init the lock on first call (DllMain isn't always a safe place
     // to do this; this gets us the same effect with fewer constraints).
