@@ -11,6 +11,9 @@ if errorlevel 1 goto fail
 
 if not exist build mkdir build
 
+REM Ensure forwarders.c is MSVC-syntax (gen_shim.py emits GCC syntax by default).
+where py >nul 2>nul && py scripts\fix_msvc.py || python scripts\fix_msvc.py
+
 cl /nologo /LD /O2 /MT /D_USRDLL /D_WINDLL /Fobuild\ ^
    /I ..\..\fremsoft\src ^
    /I ..\..\fremsoft\src\vendor ^
