@@ -83,8 +83,18 @@ def iter_frames(log_path: Path) -> Iterator[Frame]:
 
 
 def iter_frames_stdin() -> Iterator[Frame]:
-    """Yield frames from stdin, line-buffered. Use with ``tail -F``."""
-    for line in sys.stdin:
+    """Yield frames from stdin, one line at a time.
+
+    NOTE: do not use ``for line in sys.stdin:`` — when stdin is a pipe
+    (not a TTY), CPython block-buffers that iterator and the first frame
+    only appears after ~8 KB accumulates. ``readline()`` issues a syscall
+    per line and returns immediately, which is what we need for live
+    tail piped from ``Get-Content -Wait`` / ``tail -F``.
+    """
+    while True:
+        line = sys.stdin.readline()
+        if not line:
+            return
         f = _parse_line(line.rstrip("\n"))
         if f is not None:
             yield f
