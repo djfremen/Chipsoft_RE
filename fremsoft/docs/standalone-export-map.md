@@ -116,9 +116,19 @@ isn't in the recording:
    ```
    <ms_since_attach>|<wall_ms>|<tid>|UNKNOWN|can_id=0x%04X|uds=<hex bytes>
    ```
-2. Schedule a single PDU_IT_ERROR event at `now + 50 ms` with
-   ErrorCodeId = `PDU_ERR_INVALID_PARAMETERS` (0x07) so Tech2Win
-   receives a clean failure (instead of a hang) and moves on.
+2. Schedule a single PDU_IT_RESULT event at `now + 50 ms` carrying a
+   UDS NegativeResponse: `7F <original_SID> 0x11` (ServiceNotSupported).
+   The middle byte ECHOES the SID Tech2 sent — `7F 11` alone is not
+   valid UDS. Examples:
+
+       Request 1A 90      → NRC 7F 1A 11
+       Request 27 01      → NRC 7F 27 11
+       Request A9 81 12   → NRC 7F A9 11
+
+   Tech2Win sees a clean per-ECU rejection and moves on to the next
+   step in the menu (or displays "ECU does not support this function"
+   for interactive ones). Much cleaner than a PDU_IT_ERROR event,
+   which signals a transport-stack failure rather than an ECU response.
 
 This unknown log IS the protocol-map. Each line is a Tech2 capability
 we hadn't recorded yet — a candidate for the next bench capture.
